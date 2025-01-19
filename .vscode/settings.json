@@ -56,5 +56,7 @@
     "edu.wpi.first.math.proto.*",
     "edu.wpi.first.math.**.proto.*",
     "edu.wpi.first.math.**.struct.*",
-  ]
+  ],
+  "java.search.scope": "all",
+  "java.format.settings.url": ".vscode/java-formatter.xml"
 }
