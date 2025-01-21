@@ -1,7 +1,10 @@
 public class ClimberSubsystem extends SubsystemBase {
   public final MotorController climberMotor;
+  public final MotorController climberMotorFollower;
   public ClimberSubsystem() {
     climberMotor = new sparkMAX(Constants.ClimberConstants.kClimberId, MotorType.kBrushless);
+    climberMotorFollower = new sparkMAX(Constants.ClimberConstants.kClimberFollowerId, MotorType.kBrushless);
+    climberMotorFollower.follow(climberMotor);
   }
 
   public void setSpeed(double speed) {

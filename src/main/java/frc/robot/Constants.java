@@ -4,6 +4,7 @@ public class Constants {
     public static class CANConstants {
         // Climber
         public static final int kClimberId = 1;
+        public static final int kClimberFollowerId = 1;
     }
 
     public static class ClimberConstants {
