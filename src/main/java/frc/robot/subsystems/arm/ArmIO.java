@@ -12,7 +12,7 @@ public interface ArmIO {
     public Rotation2d currentAngle();
 
     public double intakeSpeed(); 
-    //I would like to add a unit to this but I couldn't figureout what class to use 🤷‍♀️
+    //I would like to add a unit to this but I couldn't figureout what class to use
 
     default void stop() {
         //Should this be in real? I don't think so as it's the same for both
