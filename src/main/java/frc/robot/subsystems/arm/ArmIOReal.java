@@ -12,7 +12,7 @@ public class ArmIOReal implements ArmIO{
     SparkMax intakeMotor = new SparkMax(Constants.CANConstants.kIntakeMotor, MotorType.kBrushless);
     AnalogInput algaeSensor = new AnalogInput(Constants.AnalogInputConstants.kAlgaeSensor);
     
-    public class ArmIOReal {
+    public ArmIOReal() {
     }
 
     @Override
