@@ -19,7 +19,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     // Bind the PS5 controller buttons to the ClimberSubsystem commands
-    ps5Controller.povUp().onTrue(climberSubsystem.climbUpCommand());
+    ps5Controller.povUp().onTrue(climberSubsystem.cUpCommand());
   }
 
   public Command getAutonomousCommand() {
