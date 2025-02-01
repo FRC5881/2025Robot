@@ -1,0 +1,22 @@
+name: Dependency Submission
+
+on: push
+
+permissions:
+  contents: write
+
+jobs:
+  dependency-submission:
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Install roboRIO Cross Compiler
+      run: curl -SL https://github.com/wpilibsuite/opensdk/releases/download/v2025-1/cortexa9_vfpv3-roborio-academic-2025-x86_64-linux-gnu-Toolchain-12.1.0.tgz | sh -c 'mkdir -p /usr/local && cd /usr/local && tar xzf - --strip-components=2'
+    - name: Checkout sources
+      uses: actions/checkout@v4
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: 17
+    - name: Generate and submit dependency graph
+      uses: gradle/actions/dependency-submission@v4
