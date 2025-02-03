@@ -5,6 +5,8 @@ import static edu.wpi.first.units.Units.Kilograms;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Pound;
 
+import java.util.Optional;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
@@ -24,15 +26,43 @@ public class ArmIOSim implements ArmIO {
     private static final double kWheelIntertia = wheelInertialConstant * wheelMass.in(Kilograms) * wheelRadius.in(Meters);
     private static final double kArmInertia = (Math.pow(armLength.in(Meters), 2)) * ((armMass.in(Kilograms)/3) + wheelMass.in(Kilograms));
 
-    private static SingleJointedArmSim armSim = new SingleJointedArmSim(DCMotor.getNEO(1), 10, kArmInertia, armLength.in(Meters), -Math.PI/2, Math.PI/2, true, -Math.PI/2);
-    private static FlywheelSim intakeSim = new FlywheelSim(LinearSystemId.createFlywheelSystem(DCMotor.getNeo550(1), kWheelIntertia, 3), DCMotor.getNeo550(1));
+    SingleJointedArmSim pivotSim = new SingleJointedArmSim(DCMotor.getNEO(1), 10, kArmInertia, armLength.in(Meters), -Math.PI/2, 3*Math.PI/4, true, -Math.PI/2);
+    FlywheelSim intakeSim = new FlywheelSim(LinearSystemId.createFlywheelSystem(DCMotor.getNeo550(1), kWheelIntertia, 3), DCMotor.getNeo550(1));
 
     public ArmIOSim() {
     }
 
+    //outputs
+
+    public double pivotVolts = 0;
+    public double intakeVolts = 0;
+
+    @Override
+    public void setArmVoltages(Optional<Double> pivotVoltage, Optional<Double> intakeVoltage) {
+        if (pivotVoltage.isPresent()){
+            pivotSim.setInputVoltage(pivotVoltage.get());
+            pivotVolts = pivotVoltage.get();
+        }
+        if (intakeVoltage.isPresent()){
+            intakeSim.setInputVoltage(intakeVoltage.get());
+            intakeVolts = intakeVoltage.get();
+        }
+    }
+    
     @Override
     public void setArmVoltages(double pivotVoltage, double intakeVoltage) {
-        armSim.setInputVoltage(pivotVoltage);
+        pivotSim.setInputVoltage(pivotVoltage);
+        intakeSim.setInputVoltage(intakeVoltage);
+    }
+
+    //inputs
+
+    public double getPivotVoltage(){
+        return pivotVolts;
+    }
+
+    public double getIntakeVoltage(){
+        return intakeVolts;
     }
 
     @Override
@@ -41,17 +71,13 @@ public class ArmIOSim implements ArmIO {
     }
 
     @Override
-    public Rotation2d currentAngle() {
-        return new Rotation2d(armSim.getAngleRads());
+    public Rotation2d getCurrentAngle() {
+        return new Rotation2d(pivotSim.getAngleRads());
     }
 
     @Override
-    public double intakeSpeed() {
+    public double getIntakeSpeed() {
         return intakeSim.getAngularVelocityRPM();
     }
 
-    public void periodic() {
-        armSim.update(0.020);
-        intakeSim.update(0.020);
-    }
 }
