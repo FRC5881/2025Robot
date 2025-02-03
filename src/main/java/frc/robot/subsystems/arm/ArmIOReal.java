@@ -1,8 +1,12 @@
 package frc.robot.subsystems.arm;
 
 import com.revrobotics.spark.SparkMax;
+
+import java.util.Optional;
+
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.hal.simulation.RoboRioDataJNI;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.AnalogInput;
 import frc.robot.Utils.Constants;
@@ -16,9 +20,27 @@ public class ArmIOReal implements ArmIO{
     }
 
     @Override
+    public void setArmVoltages(Optional<Double> pivotVoltage, Optional<Double> intakeVoltage){
+        if (pivotVoltage.isPresent() == true){
+            pivotMotor.setVoltage(pivotVoltage.get());
+        }
+        if (intakeVoltage.isPresent() == true){
+            intakeMotor.setVoltage(intakeVoltage.get());
+        }
+    }
+
+    @Override
     public void setArmVoltages(double pivotVoltage, double intakeVoltage){
         pivotMotor.setVoltage(pivotVoltage);
         intakeMotor.setVoltage(intakeVoltage);
+    }
+
+    public double getPivotVoltage(){
+        return pivotMotor.getAppliedOutput() * pivotMotor.getBusVoltage();
+    }
+
+    public double getIntakeVoltage(){
+        return intakeMotor.getAppliedOutput() * intakeMotor.getBusVoltage();
     }
 
     @Override
@@ -28,7 +50,7 @@ public class ArmIOReal implements ArmIO{
     }
 
     @Override
-    public Rotation2d currentAngle(){
+    public Rotation2d getCurrentAngle(){
         Rotation2d angle = Rotation2d.fromRotations(pivotMotor.getEncoder().getPosition());
         return angle;
     }
@@ -37,7 +59,7 @@ public class ArmIOReal implements ArmIO{
      * This is in RPM
      */
     @Override
-    public double intakeSpeed(){
+    public double getIntakeSpeed(){
         double speed = intakeMotor.getEncoder().getVelocity();
         return speed;
     }
