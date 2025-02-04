@@ -37,30 +37,20 @@ public class ClimberSubsystem extends SubsystemBase {
         return climberMotor.getOutputCurrent() * Constants.ClimberConstants.kMaxTorque;
     }
 
-    public Command climbUpCommand() {
-        return new Command() {
-            @Override
-            public void initialize() {
-                double torque = getTorque();
-                double speed = calculateSpeed(torque);
-                climbUp(speed);
-            }
+    public Command cUpCommand() {
+        return runEnd(() -> {
+            double torque = getTorque();
+            double speed = calculateSpeed(torque);
+            climbUp(speed);
+        }, this::stop);
+    }
 
-            @Override
-            public void execute() {
-                // Add any additional execution logic here if needed
-            }
-
-            @Override
-            public void end(boolean interrupted) {
-                stop();
-            }
-
-            @Override
-            public boolean isFinished() {
-                return false; // Change this condition as per your requirement
-            }
-        };
+    public Command cDownCommand() {
+        return runEnd(() -> {
+            double torque = getTorque();
+            double speed = calculateSpeed(torque);
+            climbUp(-speed);
+        }, this::stop);
     }
 
     private double calculateSpeed(double torque) {

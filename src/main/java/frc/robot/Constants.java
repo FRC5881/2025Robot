@@ -3,8 +3,8 @@ package frc.robot;
 public class Constants {
     public static class CANConstants {
         // Climber
-        public static final int kClimberId = 1;
-        public static final int kClimberFollowerId = 1;
+        public static final int kClimberId = 5;
+        public static final int kClimberFollowerId = 6;
     }
 
     public static class ClimberConstants {
