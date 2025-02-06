@@ -34,4 +34,15 @@ public final class Constants {
     /** Replaying from a log file. */
     REPLAY
   }
+
+    public static class CANConstants {
+        // Climber
+        public static final int kClimberId = 1;
+    }
+
+    public static class ClimberConstants {
+        public static final double kClimberSpeed = 0.5;
+        public static final double kMinClimberSpeed = 0;
+        public static final double kMaxTorque = 10;
+    }
 }

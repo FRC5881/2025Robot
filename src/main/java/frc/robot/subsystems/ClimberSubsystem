@@ -1,0 +1,60 @@
+public class ClimberSubsystem extends SubsystemBase {
+  public final MotorController climberMotor;
+  public ClimberSubsystem() {
+    climberMotor = new sparkMAX(Constants.ClimberConstants.kClimberId, MotorType.kBrushless);
+  }
+
+  public void setSpeed(double speed) {
+    climberMotor.set(speed);
+  }
+
+    public void stop() {
+        climberMotor.stopMotor();
+    }
+
+    public void climbUp() {
+        climberMotor.setVoltage(Constants.ClimberConstants.kClimberSpeed);
+    }
+
+    public double getTorque() {
+        return climberMotor.getOutputCurrent() * Constants.ClimberConstants.kClimberTorqueConstant;
+    }
+
+    public Command climbUpCommand() {
+        return new Command() {
+            @Override
+            public void execute() {
+                double torque = getTorque();
+                double speed = calculateSpeed(torque);
+                climbUp(speed);
+            }
+
+            @Override
+            public void end() {
+                stop();
+            }
+
+            @Override
+            public boolean isFinished() {
+                return false; // Run until interrupted
+            }
+        };
+    }
+
+    private double calculateSpeed(double torque) {
+        double maxTorque = Constants.ClimberConstants.kClimberMaxTorque;
+        double minSpeed = Constants.ClimberConstants.kMinClimberSpeed;
+        double maxSpeed = Constants.ClimberConstants.kClimberSpeed;
+
+        if (torque >= maxTorque) {
+            return minSpeed;
+        } else {
+            return (torque / maxTorque) * (maxSpeed - minSpeed) + minSpeed;
+        }
+    }
+
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+  }
+}
