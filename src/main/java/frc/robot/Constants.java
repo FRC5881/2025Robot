@@ -12,4 +12,10 @@ public class Constants {
         public static final double kMinClimberSpeed = 0;
         public static final double kMaxTorque = 10;
     }
+
+    public static class L1Constants {
+        public static final double kLowerPosition = 0.0;
+        public static final double kUpperPosition = 100.0;
+        public static final double kTolerance = 1.0;
+    }
 }
