@@ -44,7 +44,7 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Utils.Constants.OperatorConstants;
-import frc.robot.subsystems.arm.ArmSubsystem;
+import frc.robot.subsystems.algaeArm.AlgaeArmSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -65,7 +65,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   
-  private ArmSubsystem arm = new ArmSubsystem();
+  private AlgaeArmSubsystem arm = new AlgaeArmSubsystem();
 
   private final CommandXboxController m_driverController = new CommandXboxController(
             OperatorConstants.kDriverControllerPort);            

@@ -1,4 +1,4 @@
-package frc.robot.subsystems.arm;
+package frc.robot.subsystems.algaeArm;
 
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Kilograms;
@@ -15,7 +15,7 @@ import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
-public class ArmIOSim implements ArmIO {
+public class AlgaeArmIOSim implements AlgaeArmIO {
     // Arm Simulation
     private static final Distance armLength = Inches.of(20);
     private static final Mass armMass = Pound.of(2);
@@ -29,7 +29,7 @@ public class ArmIOSim implements ArmIO {
     SingleJointedArmSim pivotSim = new SingleJointedArmSim(DCMotor.getNEO(1), 10, kArmInertia, armLength.in(Meters), -Math.PI/2, 3*Math.PI/4, true, -Math.PI/2);
     FlywheelSim intakeSim = new FlywheelSim(LinearSystemId.createFlywheelSystem(DCMotor.getNeo550(1), kWheelIntertia, 3), DCMotor.getNeo550(1));
 
-    public ArmIOSim() {
+    public AlgaeArmIOSim() {
     }
 
     //outputs
