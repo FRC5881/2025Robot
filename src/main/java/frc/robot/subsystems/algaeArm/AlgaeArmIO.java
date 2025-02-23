@@ -1,10 +1,10 @@
-package frc.robot.subsystems.arm;
+package frc.robot.subsystems.algaeArm;
 
 import java.util.Optional;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 
-public interface ArmIO {
+public interface AlgaeArmIO {
     // output
     public void setArmVoltages(Optional<Double> pivotVoltage, Optional<Double> intakeVoltage);
     public void setArmVoltages(double pivotVoltage, double intakeVoltage);

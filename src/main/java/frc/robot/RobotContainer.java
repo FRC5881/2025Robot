@@ -10,11 +10,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.robot.Utils.Constants.OperatorConstants;
-import frc.robot.subsystems.arm.ArmSubsystem;
+import frc.robot.subsystems.algaeArm.AlgaeArmSubsystem;
 
 public class RobotContainer {
   
-  private ArmSubsystem arm = new ArmSubsystem();
+  private AlgaeArmSubsystem arm = new AlgaeArmSubsystem();
 
   private final CommandPS5Controller m_driverController = new CommandPS5Controller(
             OperatorConstants.kDriverControllerPort);            

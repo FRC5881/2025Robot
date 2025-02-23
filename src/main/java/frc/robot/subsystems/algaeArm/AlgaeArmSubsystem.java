@@ -1,4 +1,4 @@
-package frc.robot.subsystems.arm;
+package frc.robot.subsystems.algaeArm;
 
 import java.util.Optional;
 
@@ -10,24 +10,24 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class ArmSubsystem extends SubsystemBase {
+public class AlgaeArmSubsystem extends SubsystemBase {
     // TODO: Make proper new values
     private final SimpleMotorFeedforward pivotFF = new SimpleMotorFeedforward(0,0,0);
     private final PIDController pivotPID = new PIDController(0.15, 0.1, 0.05); //This is okay but needs more tuning
     private final SimpleMotorFeedforward intakeFF = new SimpleMotorFeedforward(0,0,0);
     private final PIDController intakePID = new PIDController(0, 0, 0);
 
-    private ArmIO io;
+    private AlgaeArmIO io;
 
     public Rotation2d pivotSetpoint = new Rotation2d(Math.toRadians(-90));
 
-    public ArmSubsystem() {
+    public AlgaeArmSubsystem() {
         if (RobotBase.isSimulation()) {
-            io = new ArmIOSim();
+            io = new AlgaeArmIOSim();
             
             // throw new RuntimeException("The simulated arm doesn't exist yet");
         } else {
-            io = new ArmIOReal();
+            io = new AlgaeArmIOReal();
             // throw new RuntimeException("The real arm doesn't exist yet");
         }
         this.setDefaultCommand(cPivotDegControl());
@@ -37,8 +37,8 @@ public class ArmSubsystem extends SubsystemBase {
 
     @Override
     public void simulationPeriodic() {
-        ((ArmIOSim) io).pivotSim.update(0.020);
-        ((ArmIOSim) io).intakeSim.update(0.020);
+        ((AlgaeArmIOSim) io).pivotSim.update(0.020);
+        ((AlgaeArmIOSim) io).intakeSim.update(0.020);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package frc.robot.subsystems.arm;
+package frc.robot.subsystems.algaeArm;
 
 import com.revrobotics.spark.SparkMax;
 
@@ -6,17 +6,16 @@ import java.util.Optional;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
-import edu.wpi.first.hal.simulation.RoboRioDataJNI;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.AnalogInput;
 import frc.robot.Utils.Constants;
 
-public class ArmIOReal implements ArmIO{
+public class AlgaeArmIOReal implements AlgaeArmIO{
     SparkMax pivotMotor = new SparkMax(Constants.CANConstants.kPivotMotor, MotorType.kBrushless);
     SparkMax intakeMotor = new SparkMax(Constants.CANConstants.kIntakeMotor, MotorType.kBrushless);
     AnalogInput algaeSensor = new AnalogInput(Constants.AnalogInputConstants.kAlgaeSensor);
     
-    public ArmIOReal() {
+    public AlgaeArmIOReal() {
     }
 
     @Override

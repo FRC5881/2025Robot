@@ -4,6 +4,8 @@ public class Constants {
 
     public static class AnalogInputConstants {
         public static final int kAlgaeSensor = 0;
+        public static final int kCoralSensorL1 = 1;
+        public static final int kCoralSensorL2 = 2;
     }
 
     public static class CANConstants {
@@ -13,7 +15,10 @@ public class Constants {
         public static final int kPivotMotor = 1;
         public static final int kIntakeMotor = 2;
 
-        //Coral
+        //L1
+        public static final int kMotorL1 = 5;
+
+        //L2
 
         //Deep Climb
     }
