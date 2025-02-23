@@ -43,8 +43,11 @@ import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
+import frc.robot.Utils.Constants;
 import frc.robot.Utils.Constants.OperatorConstants;
 import frc.robot.subsystems.algaeArm.AlgaeArmSubsystem;
+import frc.robot.subsystems.armL1.ArmL1Subsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -65,7 +68,8 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   
-  private AlgaeArmSubsystem arm = new AlgaeArmSubsystem();
+  private AlgaeArmSubsystem algaeArm = new AlgaeArmSubsystem();
+  private ArmL1Subsystem coralArm = new ArmL1Subsystem();
 
   private final CommandXboxController m_driverController = new CommandXboxController(
             OperatorConstants.kDriverControllerPort);            
@@ -158,6 +162,9 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+  private void configureBindings() {
+
+    //TESTING CONTROLS:
     Rotation2d horizontal = new Rotation2d(0.0);
     Rotation2d down = new Rotation2d(-Math.PI/2);
     Rotation2d up = new Rotation2d(Math.PI/2);
@@ -182,9 +189,31 @@ public class RobotContainer {
       arm.pivotSetpoint = up;
     }));
 
-    m_driverController.b().onTrue(Commands.runOnce(() -> {
-      Rotation2d TriSetpoint = new Rotation2d(Math.toRadians(SmartDashboard.getNumber("Arm/mySetpoint", 20)));
-      arm.pivotSetpoint = TriSetpoint;
+    //DRIVER CONTROLS:
+
+    m_driverController.L1().onTrue(Commands.runOnce(() -> {
+      algaeArm.cGrabAlgae();
+    }));
+
+
+    //Coral L1 Controls:
+
+    // Will be used after testing
+    // m_driverController.triangle().onTrue(Commands.runOnce(()->{
+    //   coralArm.L1Setpoint = Constants.PositionConstants.kDropL1;
+    // }));
+
+    //COPILOT CONTROLS:
+
+    //Coral L1 Controls:
+    m_copilotController.povUp().onTrue(Commands.runOnce(()->{
+      coralArm.L1Setpoint = Constants.PositionConstants.kIntakeReadyL1;
+    }));
+    m_copilotController.povRight().onTrue(Commands.runOnce(()->{
+      coralArm.L1Setpoint = Constants.PositionConstants.kHomeL1;
+    }));
+    m_copilotController.povRight().onTrue(Commands.runOnce(()->{
+      coralArm.L1Setpoint = Constants.PositionConstants.kDropReadyL1;
     }));
 
     // Lock to 0° when A button is held
