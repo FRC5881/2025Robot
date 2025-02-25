@@ -17,7 +17,7 @@ public class L2Subsystem extends SubsystemBase {
         Sensor1 = false;
         Sensor2 = false;
 
-        setDefaultCommand(cCenter());
+        setDefaultCommand(centerCommand());
     }
 
     public void output(double speed) {
@@ -37,17 +37,17 @@ public class L2Subsystem extends SubsystemBase {
         L2Motor.set(0);
     }
 
-    public Command cOutputLeft() {
+    public Command outputLeftCommand() {
         double speed = Constants.L2Constants.kL2Speed;
         return startEnd(() -> output(speed), () -> stop());
     }
 
-    public Command cCenter() {
+    public Command centerCommand() {
         double speed = Constants.L2Constants.kL2Speed;
         return startEnd(() -> center(speed), () -> stop());
     }
 
-    public Command cOutputRight() {
+    public Command outputRightCommand() {
         double speed = -Constants.L2Constants.kL2Speed;
         return startEnd(() -> output(speed), () -> stop());
     }
