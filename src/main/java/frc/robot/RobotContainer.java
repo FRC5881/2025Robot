@@ -6,12 +6,14 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.L1Subsystem;
 
 public class RobotContainer {
   private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
-  private final CommandXboxController ps5Controller = new CommandXboxController(0);
+  private final CommandPS5Controller ps5Controller = new CommandPS5Controller(0);
+  private final L1Subsystem l1Subsystem = new L1Subsystem();
 
   public RobotContainer() {
     configureBindings();
@@ -19,7 +21,9 @@ public class RobotContainer {
 
   private void configureBindings() {
     // Bind the PS5 controller buttons to the ClimberSubsystem commands
-    ps5Controller.a().onTrue(climberSubsystem.climbUpCommand());
+    ps5Controller.cross().onTrue(climberSubsystem.climbUpCommand());
+    ps5Controller.povUp().onTrue(l1Subsystem.moveToUpperPositionCommand());
+    ps5Controller.povRight().onTrue(l1Subsystem.moveToLowerPositionCommand());
   }
 
   public Command getAutonomousCommand() {
