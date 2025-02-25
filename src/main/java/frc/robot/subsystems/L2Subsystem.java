@@ -17,6 +17,7 @@ public class L2Subsystem extends SubsystemBase {
         Sensor1 = false;
         Sensor2 = false;
 
+        setDefaultCommand(cCenter());
     }
 
     public void output(double speed) {
