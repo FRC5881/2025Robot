@@ -33,7 +33,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.subsystems.drive.encoders.ModuleEncoderThrifty;
-
 import java.util.Queue;
 import java.util.function.DoubleSupplier;
 
@@ -92,7 +91,7 @@ public class ModuleIOSpark implements ModuleIO {
               default -> 0;
             },
             MotorType.kBrushless);
-    turnEncoder = 
+    turnEncoder =
         new ModuleEncoderThrifty(
             switch (module) {
               case 0 -> frontLeftThriftyId;
@@ -169,7 +168,7 @@ public class ModuleIOSpark implements ModuleIO {
         .appliedOutputPeriodMs(20)
         .busVoltagePeriodMs(20)
         .outputCurrentPeriodMs(20);
-    
+
     // tryUntilOk(
     //     turnSpark,
     //     5,
@@ -204,7 +203,10 @@ public class ModuleIOSpark implements ModuleIO {
         turnSpark,
         turnEncoder::getRawAbsolutePosition,
         (value) -> inputs.turnPosition = new Rotation2d(value).minus(zeroRotation));
-    ifOk(turnSpark, turnEncoder::getRawAbsolutePosition, (value) -> inputs.turnVelocityRadPerSec = value);
+    ifOk(
+        turnSpark,
+        turnEncoder::getRawAbsolutePosition,
+        (value) -> inputs.turnVelocityRadPerSec = value);
     ifOk(
         turnSpark,
         new DoubleSupplier[] {turnSpark::getAppliedOutput, turnSpark::getBusVoltage},
