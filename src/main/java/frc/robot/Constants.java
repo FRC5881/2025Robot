@@ -13,6 +13,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -36,9 +37,19 @@ public final class Constants {
   }
 
   public static class CANConstants {
+    // Swerve Drive
+
     // Climber
     public static final int kClimberId = 1;
+    
+    // Arm
+    public static final int kPivotMotor = 10;
+    public static final int kIntakeMotor = 11;
 
+    // L1
+    public static final int kMotorL1 = 20;
+
+    // L2
     public static final int kL2Id = 26;
   }
 
@@ -52,4 +63,39 @@ public final class Constants {
     public static final double kL2CenterSpeed = 0.25;
     public static final double kL2ExitSpeed = 0.5;
   }
+
+      public static class AnalogInputConstants {
+        public static final int kAlgaeSensor = 0;
+        public static final int kCoralSensorL1 = 1;
+        public static final int kCoralSensorL2 = 2;
+    }
+
+
+    public static class OperatorConstants {
+        public static final int kDriverControllerPort = 0;
+        public static final int kCopilotControllerPort = 1;
+    }
+
+    public static class PositionConstants{
+      //Testing values
+      public static final Rotation2d kAlgaeArmTestDown = new Rotation2d(-Math.PI/2);
+      public static final Rotation2d kAlgaeArmHorizontal = new Rotation2d(0.0);
+      public static final Rotation2d kAlgaeArmUp = new Rotation2d(Math.PI/2);
+      
+      //Algae Arm values
+      public static final Rotation2d kAlgaeArmOut = new Rotation2d(Math.toRadians(-30));
+      public static final Rotation2d kAlgaeArmDown = new Rotation2d(Math.toRadians(-60));
+      public static final Rotation2d kAlgaeArmAway = new Rotation2d(Math.toRadians(80));
+      
+      //Algae Intake values
+      public static final double kAlgaeIntakeIn = 3000;
+      public static final double kAlgaeIntakeOut = -3000;
+      public static final double kAlgaeIntakeHold = 0;
+
+      //Coral L1
+      public static final Rotation2d kDropReadyL1 = new Rotation2d(Math.toRadians(95));
+      public static final Rotation2d kDropL1 = new Rotation2d(Math.toRadians(40));
+      public static final Rotation2d kHomeL1 = new Rotation2d(Math.toRadians(0));
+      public static final Rotation2d kIntakeReadyL1 = new Rotation2d(Math.toRadians(170)); //The chute is 55 degrees
+    }
 }

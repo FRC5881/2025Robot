@@ -22,8 +22,9 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.L2Subsystem;
 import frc.robot.subsystems.drive.Drive;
@@ -42,6 +43,8 @@ import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import frc.robot.subsystems.algaeArm.AlgaeArmSubsystem;
+import frc.robot.subsystems.armL1.ArmL1Subsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -57,13 +60,19 @@ public class RobotContainer {
 
   private SwerveDriveSimulation driveSimulation = null;
 
-  // Controller
-  private final CommandPS5Controller driverController = new CommandPS5Controller(0);
-
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  
+  private AlgaeArmSubsystem algaeArm = new AlgaeArmSubsystem();
+  private ArmL1Subsystem coralArm = new ArmL1Subsystem();
+
+  private final CommandXboxController m_driverController = new CommandXboxController(
+            OperatorConstants.kDriverControllerPort);            
+  private final CommandXboxController m_copilotController = new CommandXboxController(
+          OperatorConstants.kCopilotControllerPort);
+
   public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
@@ -140,36 +149,80 @@ public class RobotContainer {
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Configure the button bindings
-    configureButtonBindings();
+    configureBindings();
   }
-
+  
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {
+  private void configureBindings() {
+    //TESTING CONTROLS:
+    Rotation2d horizontal = new Rotation2d(0.0);
+    Rotation2d down = new Rotation2d(-Math.PI/2);
+    Rotation2d up = new Rotation2d(Math.PI/2);
+
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -driverController.getLeftY(),
-            () -> -driverController.getLeftX(),
-            () -> -driverController.getRightX()));
+            () -> -m_driverController.getLeftY(),
+            () -> -m_driverController.getLeftX(),
+            () -> -m_driverController.getRightX()));
+    
+    m_driverController.x().onTrue(Commands.runOnce(() -> {
+      algaeArm.pivotSetpoint = horizontal;
+    }));
+
+    m_driverController.a().onTrue(Commands.runOnce(() -> {
+      algaeArm.pivotSetpoint = down;
+    }));
+
+    m_driverController.y().onTrue(Commands.runOnce(() -> {
+      algaeArm.pivotSetpoint = up;
+    }));
+
+    // DRIVER CONTROLS
+    m_driverController.leftTrigger().onTrue(Commands.runOnce(() -> {
+      algaeArm.cGrabAlgae();
+    }));
+
+
+    // Coral L1 Controls:
+
+    // Will be used after testing
+    // m_driverController.triangle().onTrue(Commands.runOnce(()->{
+    //   coralArm.L1Setpoint = Constants.PositionConstants.kDropL1;
+    // }));
+
+    //COPILOT CONTROLS:
+
+    //Coral L1 Controls:
+    //TODO: change to copilot
+    m_driverController.povUp().onTrue(Commands.runOnce(()->{
+      coralArm.L1Setpoint = Constants.PositionConstants.kIntakeReadyL1;
+    }));
+    m_driverController.povDown().onTrue(Commands.runOnce(()->{
+      coralArm.L1Setpoint = Constants.PositionConstants.kHomeL1;
+    }));
+    m_driverController.povRight().onTrue(Commands.runOnce(()->{
+      coralArm.L1Setpoint = Constants.PositionConstants.kDropReadyL1;
+    }));
 
     // Lock to 0° when A button is held
-    driverController
-        .cross()
+    m_driverController
+        .a()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> -driverController.getLeftY(),
-                () -> -driverController.getLeftX(),
+                () -> -m_driverController.getLeftY(),
+                () -> -m_driverController.getLeftX(),
                 () -> new Rotation2d()));
 
     // Switch to X pattern when X button is pressed
-    driverController.square().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    m_driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Reset gyro / odometry
     final Runnable resetGyro =
@@ -182,11 +235,13 @@ public class RobotContainer {
             : () ->
                 drive.resetOdometry(
                     new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
-    driverController.touchpad().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
+    
+    
+    m_driverController.start().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
     // L2 Subsystem
-    driverController.circle().whileTrue(l2Subsystem.outputRightCommand());
-    driverController.square().whileTrue(l2Subsystem.outputLeftCommand());
+    m_driverController.b().whileTrue(l2Subsystem.outputRightCommand());
+    m_driverController.x().whileTrue(l2Subsystem.outputLeftCommand());
   }
 
   /**

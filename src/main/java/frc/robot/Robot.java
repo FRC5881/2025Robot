@@ -14,6 +14,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Threads;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.ironmaple.simulation.SimulatedArena;
@@ -104,7 +105,6 @@ public class Robot extends LoggedRobot {
     Threads.setCurrentThreadPriority(false, 10);
   }
 
-  /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
     robotContainer.resetSimulationField();
