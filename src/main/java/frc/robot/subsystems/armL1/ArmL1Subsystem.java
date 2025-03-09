@@ -4,22 +4,21 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Utils.Constants;
-import frc.robot.subsystems.algaeArm.AlgaeArmSubsystem;
 
 public class ArmL1Subsystem extends SubsystemBase {
 
     // TODO: Make proper new values
     private final SimpleMotorFeedforward feedforward_L1 = new SimpleMotorFeedforward(0,0,0);
-    private final PIDController PID_L1 = new PIDController(0.15, 0.1, 0.05); //This is okay but needs more tuning
+    private final PIDController PID_L1 = new PIDController(0.024, 0.0035, 0.00015); //Tuned
 
     public ArmL1IO io;
 
     //The angle system is the same as the AlgaeArm
-    public Rotation2d L1Setpoint = new Rotation2d(Math.toRadians(-90));
+    public Rotation2d L1Setpoint = new Rotation2d(Math.toRadians(0));
 
     public ArmL1Subsystem() {
         if (RobotBase.isSimulation()) {
@@ -39,6 +38,13 @@ public class ArmL1Subsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        SmartDashboard.putData(this);
+
+        SmartDashboard.putNumber("L1/currentAngle", io.getCurrentAngle().getDegrees());
+        SmartDashboard.putNumber("L1/Setpoint", this.L1Setpoint.getDegrees());
+
+        SmartDashboard.putNumber("L1/voltage", io.getVoltage());
+        SmartDashboard.putData("L1/L1PID", PID_L1);
 
     }
 
@@ -46,7 +52,7 @@ public class ArmL1Subsystem extends SubsystemBase {
         return runEnd(() -> {
             Rotation2d currentPos = io.getCurrentAngle();
             io.setVoltage(feedforward_L1.calculate(this.L1Setpoint.getDegrees()) + PID_L1.calculate(currentPos.getDegrees(), this.L1Setpoint.getDegrees()));
-        }, io::stop);
+        }, io::stop).withName("cDegControl");
     }
     
     /*

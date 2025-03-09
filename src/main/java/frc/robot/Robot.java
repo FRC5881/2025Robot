@@ -4,7 +4,11 @@
 
 package frc.robot;
 
+import edu.wpi.first.hal.simulation.RoboRioDataJNI;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -13,13 +17,21 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
 
+  private final DigitalInput dio9 = new DigitalInput(9);
+  private final DigitalInput dio8 = new DigitalInput(8);
+
+
   public Robot() {
     m_robotContainer = new RobotContainer();
+    SmartDashboard.putData(new PowerDistribution());
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+
+    SmartDashboard.putBoolean("dio9", dio9.get());
+    SmartDashboard.putBoolean("dio8", dio8.get());
   }
 
   // Only useful if we want to implement a BatterySim

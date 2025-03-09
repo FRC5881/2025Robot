@@ -18,10 +18,10 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 public class AlgaeArmIOSim implements AlgaeArmIO {
     // Arm Simulation
     private static final Distance armLength = Inches.of(20);
-    private static final Mass armMass = Pound.of(2);
-    private static final Mass wheelMass = Pound.of(2);
+    private static final Mass armMass = Pound.of(7);
+    private static final Mass wheelMass = Pound.of(1);
     private static final Distance wheelRadius = Inches.of(3);
-    private static final double wheelInertialConstant = 0.7; //A wheel loaded at the rim = 1, a cylinder=0.5, so I'm guessing
+    private static final double wheelInertialConstant = 0.8; //A wheel loaded at the rim = 1, a cylinder=0.5, so I'm guessing
 
     private static final double kWheelIntertia = wheelInertialConstant * wheelMass.in(Kilograms) * wheelRadius.in(Meters);
     private static final double kArmInertia = (Math.pow(armLength.in(Meters), 2)) * ((armMass.in(Kilograms)/3) + wheelMass.in(Kilograms));

@@ -14,11 +14,11 @@ public class Constants {
         //Swerve Drive
 
         //Arm
-        public static final int kPivotMotor = 1;
-        public static final int kIntakeMotor = 2;
+        public static final int kPivotMotor = 10;
+        public static final int kIntakeMotor = 21;
 
         //L1
-        public static final int kMotorL1 = 5;
+        public static final int kMotorL1 = 20;
 
         //L2
 
@@ -45,9 +45,9 @@ public class Constants {
     public static final double kAlgaeIntakeOut = -3000;
     public static final double kAlgaeIntakeHold = 0;
     //Coral L1
-    public static final Rotation2d kDropReadyL1 = new Rotation2d(Math.toRadians(30));
-    public static final Rotation2d kDropL1 = new Rotation2d(Math.toRadians(30));
-    public static final Rotation2d kHomeL1 = new Rotation2d(Math.toRadians(-90));
-    public static final Rotation2d kIntakeReadyL1 = new Rotation2d(Math.toRadians(50)); //The chute is 55 degrees
+    public static final Rotation2d kDropReadyL1 = new Rotation2d(Math.toRadians(95));
+    public static final Rotation2d kDropL1 = new Rotation2d(Math.toRadians(40));
+    public static final Rotation2d kHomeL1 = new Rotation2d(Math.toRadians(0));
+    public static final Rotation2d kIntakeReadyL1 = new Rotation2d(Math.toRadians(170)); //The chute is 55 degrees
     }
 }

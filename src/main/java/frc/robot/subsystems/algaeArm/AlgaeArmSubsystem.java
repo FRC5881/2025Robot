@@ -47,6 +47,8 @@ public class AlgaeArmSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        SmartDashboard.putData(this);
+
         //Smart Dashboard Intake
         SmartDashboard.putNumber("Arm/intakeSpeed", io.getIntakeSpeed());
         SmartDashboard.putNumber("Arm/intakeVoltage", io.getIntakeVoltage());
