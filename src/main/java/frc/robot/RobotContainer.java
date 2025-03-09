@@ -73,8 +73,8 @@ public class RobotContainer {
 
   private final CommandXboxController m_driverController = new CommandXboxController(
             OperatorConstants.kDriverControllerPort);            
-    private final CommandXboxController m_copilotController = new CommandXboxController(
-            OperatorConstants.kCopilotControllerPort);
+  private final CommandXboxController m_copilotController = new CommandXboxController(
+          OperatorConstants.kCopilotControllerPort);
 
   public RobotContainer() {
     switch (Constants.currentMode) {
@@ -206,13 +206,14 @@ public class RobotContainer {
     //COPILOT CONTROLS:
 
     //Coral L1 Controls:
-    m_copilotController.povUp().onTrue(Commands.runOnce(()->{
+    //TODO: change to copilot
+    m_driverController.povUp().onTrue(Commands.runOnce(()->{
       coralArm.L1Setpoint = Constants.PositionConstants.kIntakeReadyL1;
     }));
-    m_copilotController.povRight().onTrue(Commands.runOnce(()->{
+    m_driverController.povDown().onTrue(Commands.runOnce(()->{
       coralArm.L1Setpoint = Constants.PositionConstants.kHomeL1;
     }));
-    m_copilotController.povRight().onTrue(Commands.runOnce(()->{
+    m_driverController.povRight().onTrue(Commands.runOnce(()->{
       coralArm.L1Setpoint = Constants.PositionConstants.kDropReadyL1;
     }));
 

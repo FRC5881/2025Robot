@@ -8,11 +8,11 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import frc.robot.Utils.Constants;
 
 public class ArmL1IOReal implements ArmL1IO {
-
     SparkMax motorL1 = new SparkMax(Constants.CANConstants.kMotorL1, MotorType.kBrushless);
     AnalogInput coralSensorL1 = new AnalogInput(Constants.AnalogInputConstants.kCoralSensorL1);
 
-
+    // public ArmL1IOReal() {
+    // }
 
     @Override
     public void setVoltage(double voltage) {
@@ -32,7 +32,7 @@ public class ArmL1IOReal implements ArmL1IO {
 
     @Override
     public Rotation2d getCurrentAngle() {
-        Rotation2d angle = Rotation2d.fromRotations(motorL1.getEncoder().getPosition());
+        Rotation2d angle = Rotation2d.fromRotations(motorL1.getEncoder().getPosition()/20);
         return angle;
     }
 
