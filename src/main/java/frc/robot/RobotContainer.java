@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.L2Subsystem;
 import frc.robot.subsystems.drive.Drive;
@@ -42,10 +43,6 @@ import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
-import frc.robot.Utils.Constants;
-import frc.robot.Utils.Constants.OperatorConstants;
 import frc.robot.subsystems.algaeArm.AlgaeArmSubsystem;
 import frc.robot.subsystems.armL1.ArmL1Subsystem;
 
@@ -152,7 +149,7 @@ public class RobotContainer {
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Configure the button bindings
-    configureButtonBindings();
+    configureBindings();
   }
   
   /**
@@ -161,9 +158,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {
   private void configureBindings() {
-
     //TESTING CONTROLS:
     Rotation2d horizontal = new Rotation2d(0.0);
     Rotation2d down = new Rotation2d(-Math.PI/2);
@@ -178,25 +173,24 @@ public class RobotContainer {
             () -> -m_driverController.getRightX()));
     
     m_driverController.x().onTrue(Commands.runOnce(() -> {
-      arm.pivotSetpoint = horizontal;
+      algaeArm.pivotSetpoint = horizontal;
     }));
 
     m_driverController.a().onTrue(Commands.runOnce(() -> {
-      arm.pivotSetpoint = down;
+      algaeArm.pivotSetpoint = down;
     }));
 
     m_driverController.y().onTrue(Commands.runOnce(() -> {
-      arm.pivotSetpoint = up;
+      algaeArm.pivotSetpoint = up;
     }));
 
-    //DRIVER CONTROLS:
-
-    m_driverController.L1().onTrue(Commands.runOnce(() -> {
+    // DRIVER CONTROLS
+    m_driverController.leftTrigger().onTrue(Commands.runOnce(() -> {
       algaeArm.cGrabAlgae();
     }));
 
 
-    //Coral L1 Controls:
+    // Coral L1 Controls:
 
     // Will be used after testing
     // m_driverController.triangle().onTrue(Commands.runOnce(()->{
