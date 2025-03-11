@@ -15,7 +15,7 @@ public class Constants {
 
         //Arm
         public static final int kPivotMotor = 10;
-        public static final int kIntakeMotor = 21;
+        public static final int kIntakeMotor = 11;
 
         //L1
         public static final int kMotorL1 = 20;
@@ -32,13 +32,12 @@ public class Constants {
 
     public static class PositionConstants{
     //TODO: Change values
-    //Testing values
-    public static final Rotation2d kAlgaeArmTestDown = new Rotation2d(-Math.PI/2);
-    public static final Rotation2d kAlgaeArmHorizontal = new Rotation2d(0.0);
-    public static final Rotation2d kAlgaeArmUp = new Rotation2d(Math.PI/2);
+    //Initialization values
+    public static final double kAlgaeDegreeOffset = -60;
     //Algae Arm values
-    public static final Rotation2d kAlgaeArmOut = new Rotation2d(Math.toRadians(-30));
-    public static final Rotation2d kAlgaeArmDown = new Rotation2d(Math.toRadians(-60));
+    //Should be in ()
+    public static final Rotation2d kAlgaeArmOut = new Rotation2d(Math.toRadians(0));
+    public static final Rotation2d kAlgaeArmDown = new Rotation2d(Math.toRadians(-50));
     public static final Rotation2d kAlgaeArmAway = new Rotation2d(Math.toRadians(80));
     //Algae Intake values
     public static final double kAlgaeIntakeIn = 3000;

@@ -2,26 +2,25 @@ package frc.robot.subsystems.algaeArm;
 
 import java.util.Optional;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Utils.Constants;
 
 public class AlgaeArmSubsystem extends SubsystemBase {
     // TODO: Make proper new values
-    private final SimpleMotorFeedforward pivotFF = new SimpleMotorFeedforward(0,0,0);
-    private final PIDController pivotPID = new PIDController(0.15, 0.1, 0.05); //This is okay but needs more tuning
+    private final ArmFeedforward pivotFF = new ArmFeedforward(0,0.33,0);
+    private final PIDController pivotPID = new PIDController(0.12, 0, 0); //This is okay but needs more tuning
     private final SimpleMotorFeedforward intakeFF = new SimpleMotorFeedforward(0,0,0);
     private final PIDController intakePID = new PIDController(0, 0, 0);
 
     public AlgaeArmIO io;
 
-    public Rotation2d pivotSetpoint = new Rotation2d(Math.toRadians(-90));
+    public Rotation2d pivotSetpoint = new Rotation2d(Math.toRadians(81));
     public double algaeIntakeSetpoint = 0; //This is in RPM
 
     public AlgaeArmSubsystem() {
@@ -33,9 +32,8 @@ public class AlgaeArmSubsystem extends SubsystemBase {
             io = new AlgaeArmIOReal();
             // throw new RuntimeException("The real arm doesn't exist yet");
         }
-        this.setDefaultCommand(cPivotDegControl());
-        this.setDefaultCommand(cIntakeVelocityControl());
-        SmartDashboard.putNumber("Arm/mySetpoint", 20);
+        this.setDefaultCommand(cDegControl());
+        SmartDashboard.putNumber("Arm/mySetpoint", 23);
     }
     
 
@@ -57,37 +55,37 @@ public class AlgaeArmSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Arm/pivotDegree", io.getCurrentAngle().getDegrees());
         SmartDashboard.putNumber("Arm/pivotVoltage", io.getPivotVoltage());
         SmartDashboard.putData("Arm/pivotPID", pivotPID);
+        SmartDashboard.putNumber("Arm/truePivotSetpoint", this.pivotSetpoint.getDegrees());
     }
 
-    public Command cPivotDegControl(){
+    public Command cDegControl(){
         return runEnd(() -> {
             Rotation2d currentPos = io.getCurrentAngle();
-            io.setArmVoltages(Optional.of(pivotFF.calculate(this.pivotSetpoint.getDegrees()) + pivotPID.calculate(currentPos.getDegrees(), this.pivotSetpoint.getDegrees())), Optional.empty());
+            io.setArmVoltages(
+                Optional.of(pivotFF.calculate(this.pivotSetpoint.getRadians(), 0) + pivotPID.calculate(currentPos.getDegrees(), this.pivotSetpoint.getDegrees())),
+                Optional.of(intakeFF.calculate(this.algaeIntakeSetpoint) + intakePID.calculate(io.getIntakeSpeed(), this.algaeIntakeSetpoint)));
         }, io::stop);
-    }
+        
+    } 
 
-    public Command cIntakeVelocityControl(){
-        return runEnd(() -> {
-            double currentSpeed = io.getIntakeSpeed();
+    // /*
+    //  * percent (the argument) should be a number between zero and one
+    //  * Same as cDegControl, only the intake doesn't have a PID or FF
+    //  */
+    // public Command cDumbIntakeDegControl(double percent){
+    //     return runEnd(() -> {
+    //         Rotation2d currentPos = io.getCurrentAngle();
+    //         io.setArmVoltages(
+    //             Optional.of(pivotFF.calculate(this.pivotSetpoint.getDegrees()) + pivotPID.calculate(currentPos.getDegrees(), this.pivotSetpoint.getDegrees())),
+    //             Optional.of(percent*12));
+    //     }, io::stop);
+    // }
 
-            io.setArmVoltages(Optional.empty(), Optional.of(intakeFF.calculate(algaeIntakeSetpoint) + intakePID.calculate(currentSpeed, algaeIntakeSetpoint)));
-        }, io::stop);
-    }
-
-    /*
-     * percent (the argument) should be a number between zero and one
-     */
-    public Command cIntakePercentDrive(double percent){
-        return runEnd(() -> {
-            io.setArmVoltages(Optional.empty(), Optional.of(percent*12));
-        }, io::stop);
-    }
-
-    public Command cGrabAlgae(){
-        return runEnd(() -> {
-            algaeIntakeSetpoint = Constants.PositionConstants.kAlgaeIntakeIn;
-            pivotSetpoint = Constants.PositionConstants.kAlgaeArmOut;
-            Commands.waitUntil(()->{return io.hasAlgae();});
-        }, io::stop);
-    }
+    // public Command cGrabAlgae(){
+    //     return runEnd(() -> {
+    //         algaeIntakeSetpoint = Constants.PositionConstants.kAlgaeIntakeIn;
+    //         pivotSetpoint = Constants.PositionConstants.kAlgaeArmOut;
+    //         Commands.waitUntil(()->{return io.hasAlgae();});
+    //     }, io::stop);
+    // }
 }

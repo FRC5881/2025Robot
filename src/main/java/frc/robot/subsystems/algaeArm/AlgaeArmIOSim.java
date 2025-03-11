@@ -33,7 +33,6 @@ public class AlgaeArmIOSim implements AlgaeArmIO {
     }
 
     //outputs
-
     public double pivotVolts = 0;
     public double intakeVolts = 0;
 

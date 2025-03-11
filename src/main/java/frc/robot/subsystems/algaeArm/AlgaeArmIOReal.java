@@ -1,21 +1,31 @@
 package frc.robot.subsystems.algaeArm;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkBase.PersistMode;
 
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.PS5Controller.Button;
 import frc.robot.Utils.Constants;
 
 public class AlgaeArmIOReal implements AlgaeArmIO{
     SparkMax pivotMotor = new SparkMax(Constants.CANConstants.kPivotMotor, MotorType.kBrushless);
     SparkMax intakeMotor = new SparkMax(Constants.CANConstants.kIntakeMotor, MotorType.kBrushless);
+    
     AnalogInput algaeSensor = new AnalogInput(Constants.AnalogInputConstants.kAlgaeSensor);
     
     public AlgaeArmIOReal() {
+        SparkMaxConfig config = new SparkMaxConfig();
+        config.inverted(true);
+        config.smartCurrentLimit(20);
+        pivotMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     @Override
@@ -50,7 +60,8 @@ public class AlgaeArmIOReal implements AlgaeArmIO{
 
     @Override
     public Rotation2d getCurrentAngle(){
-        Rotation2d angle = Rotation2d.fromRotations(pivotMotor.getEncoder().getPosition());
+        //10 degrees of slop
+        Rotation2d angle = Rotation2d.fromRotations(pivotMotor.getEncoder().getPosition()/5).plus(Rotation2d.fromDegrees(Constants.PositionConstants.kAlgaeDegreeOffset));
         return angle;
     }
 
@@ -62,4 +73,5 @@ public class AlgaeArmIOReal implements AlgaeArmIO{
         double speed = intakeMotor.getEncoder().getVelocity();
         return speed;
     }
+
 }

@@ -1,6 +1,7 @@
 package frc.robot.subsystems.algaeArm;
 
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 
@@ -11,12 +12,10 @@ public interface AlgaeArmIO {
 
     // inputs
 
-    /*
-     * Returns [intakeVolts, pivotVolts]
-     */
     public double getPivotVoltage();
     public double getIntakeVoltage();
     public boolean hasAlgae();
+
 
     public Rotation2d getCurrentAngle();
 

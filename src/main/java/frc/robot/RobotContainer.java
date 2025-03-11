@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Utils.Constants;
 import frc.robot.Utils.Constants.OperatorConstants;
 import frc.robot.subsystems.algaeArm.AlgaeArmSubsystem;
@@ -33,24 +34,33 @@ public class RobotContainer {
     //TESTING CONTROLS:
 
     m_driverController.square().onTrue(Commands.runOnce(() -> {
-      algaeArm.pivotSetpoint = Constants.PositionConstants.kAlgaeArmHorizontal;
+      algaeArm.pivotSetpoint = Constants.PositionConstants.kAlgaeArmOut;
     }));
     m_driverController.cross().onTrue(Commands.runOnce(() -> {
-      algaeArm.pivotSetpoint = Constants.PositionConstants.kAlgaeArmTestDown;
+      algaeArm.pivotSetpoint = Constants.PositionConstants.kAlgaeArmDown;
     }));
     m_driverController.triangle().onTrue(Commands.runOnce(() -> {
-      algaeArm.pivotSetpoint = Constants.PositionConstants.kAlgaeArmUp;
+      algaeArm.pivotSetpoint = Constants.PositionConstants.kAlgaeArmAway;
     }));
-    m_driverController.circle().onTrue(Commands.runOnce(() -> {
-      Rotation2d TriSetpoint = new Rotation2d(Math.toRadians(SmartDashboard.getNumber("Arm/mySetpoint", 20)));
-      algaeArm.pivotSetpoint = TriSetpoint;
-    }));
+
+    // ACTUAL CONTROLS
+    //TODO: make accurate
+    // m_driverController.circle().toggleOnTrue(Commands.runOnce(() -> {
+    //   algaeArm.algaeIntakeSetpoint = Constants.PositionConstants.kAlgaeIntakeIn;
+    // }));
+    // m_driverController.circle().toggleOnFalse(Commands.runOnce(() -> {
+    //   algaeArm.algaeIntakeSetpoint = Constants.PositionConstants.kAlgaeIntakeOut;
+    // }));
+
+    // So it will be a function cDegControl(degree, buttonDown)
+
+
 
     //DRIVER CONTROLS:
 
-    m_driverController.L1().onTrue(Commands.runOnce(() -> {
-      algaeArm.cGrabAlgae();
-    }));
+    // m_driverController.L1().onTrue(Commands.runOnce(() -> {
+    //   algaeArm.cGrabAlgae();
+    // }));
 
 
     //Coral L1 Controls:
