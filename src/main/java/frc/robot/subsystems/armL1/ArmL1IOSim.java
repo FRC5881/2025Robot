@@ -13,38 +13,40 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
 public class ArmL1IOSim implements ArmL1IO {
 
-    //TODO: Change values
-    private static final Distance armLength = Inches.of(20);
-    private static final Mass armMass = Pound.of(2);
-    private static final double kArmInertia = (Math.pow(armLength.in(Meters), 2)) * ((armMass.in(Kilograms)/3));
-    
-    SingleJointedArmSim armL1Sim = new SingleJointedArmSim(DCMotor.getNEO(1), 10, kArmInertia, armLength.in(Meters), -Math.PI/2, 3*Math.PI/4, true, -Math.PI/2);
+  // TODO: Change values
+  private static final Distance armLength = Inches.of(20);
+  private static final Mass armMass = Pound.of(2);
+  private static final double kArmInertia =
+      (Math.pow(armLength.in(Meters), 2)) * ((armMass.in(Kilograms) / 3));
 
+  SingleJointedArmSim armL1Sim =
+      new SingleJointedArmSim(
+          DCMotor.getNEO(1),
+          10,
+          kArmInertia,
+          armLength.in(Meters),
+          -Math.PI / 2,
+          3 * Math.PI / 4,
+          true,
+          -Math.PI / 2);
 
-    public ArmL1IOSim() {
-    }
+  public ArmL1IOSim() {}
 
-    public double voltage = 0;
-    public boolean coralL1 = false;
+  public double voltage = 0;
+  public boolean coralL1 = false;
 
-    @Override
-    public void setVoltage(double voltage) {
-        armL1Sim.setInputVoltage(voltage);
-    }
+  @Override
+  public void setVoltage(double voltage) {
+    armL1Sim.setInputVoltage(voltage);
+  }
 
-    @Override
-    public double getVoltage() {
-        return voltage;
-    }
+  @Override
+  public double getVoltage() {
+    return voltage;
+  }
 
-    @Override
-    public Rotation2d getCurrentAngle() {
-        return new Rotation2d(armL1Sim.getAngleRads());
-    }
-
-    @Override
-    public boolean hasCoral() {
-        return coralL1;
-    }
-
+  @Override
+  public Rotation2d getCurrentAngle() {
+    return new Rotation2d(armL1Sim.getAngleRads());
+  }
 }

@@ -26,10 +26,10 @@ import org.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
 import org.ironmaple.simulation.drivesims.configs.SwerveModuleSimulationConfig;
 
 public class DriveConstants {
-  public static final double maxSpeedMetersPerSec = 4.8;
+  public static final double maxSpeedMetersPerSec = Units.feetToMeters(12.5);
   public static final double odometryFrequency = 100.0; // Hz
-  public static final double trackWidth = Units.inchesToMeters(26.5);
-  public static final double wheelBase = Units.inchesToMeters(26.5);
+  public static final double trackWidth = Units.inchesToMeters(20.5);
+  public static final double wheelBase = Units.inchesToMeters(25.75);
   public static final double driveBaseRadius = Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
   public static final Translation2d[] moduleTranslations =
       new Translation2d[] {
@@ -40,28 +40,26 @@ public class DriveConstants {
       };
 
   // Zeroed rotation values for each module, see setup instructions
-  public static final Rotation2d frontLeftZeroRotation = new Rotation2d(0.0);
-  public static final Rotation2d frontRightZeroRotation = new Rotation2d(0.0);
-  public static final Rotation2d backLeftZeroRotation = new Rotation2d(0.0);
-  public static final Rotation2d backRightZeroRotation = new Rotation2d(0.0);
+  //   public static final Rotation2d frontLeftZeroRotation = new Rotation2d(1.46);
+  //   public static final Rotation2d frontRightZeroRotation = new Rotation2d(-0.870);
+  //   public static final Rotation2d backLeftZeroRotation = new Rotation2d(-1.49);
+  //   public static final Rotation2d backRightZeroRotation = new Rotation2d(0.37);
+
+  public static final Rotation2d frontLeftZeroRotation = Rotation2d.fromDegrees(-110);
+  public static final Rotation2d frontRightZeroRotation = Rotation2d.fromDegrees(126);
+  public static final Rotation2d backLeftZeroRotation = Rotation2d.fromDegrees(0);
+  public static final Rotation2d backRightZeroRotation = Rotation2d.fromDegrees(91);
 
   // Device CAN IDs
-  public static final int pigeonCanId = 9;
-
-  public static final int frontLeftDriveCanId = 1;
-  public static final int backLeftDriveCanId = 3;
-  public static final int frontRightDriveCanId = 5;
+  public static final int frontLeftDriveCanId = 5;
+  public static final int frontRightDriveCanId = 6;
+  public static final int backLeftDriveCanId = 4;
   public static final int backRightDriveCanId = 7;
 
-  public static final int frontLeftTurnCanId = 2;
-  public static final int backLeftTurnCanId = 4;
-  public static final int frontRightTurnCanId = 6;
-  public static final int backRightTurnCanId = 8;
-
-  public static final int frontLeftThriftyId = 0;
-  public static final int backLeftThriftyId = 2;
-  public static final int frontRightThriftyId = 1;
-  public static final int backRightThriftyId = 3;
+  public static final int frontLeftTurnCanId = 1;
+  public static final int frontRightTurnCanId = 2;
+  public static final int backLeftTurnCanId = 8;
+  public static final int backRightTurnCanId = 3;
 
   // Drive motor configuration
   public static final int driveMotorCurrentLimit = 50;
@@ -76,10 +74,10 @@ public class DriveConstants {
       (2 * Math.PI) / 60.0 / driveMotorReduction; // Rotor RPM -> Wheel Rad/Sec
 
   // Drive PID configuration
-  public static final double driveKp = 0.0;
+  public static final double driveKp = 0.00;
   public static final double driveKd = 0.0;
-  public static final double driveKs = 0.0;
-  public static final double driveKv = 0.1;
+  public static final double driveKs = 0.10529;
+  public static final double driveKv = 0.15388;
   public static final double driveSimP = 0.05;
   public static final double driveSimD = 0.0;
   public static final double driveSimKs = 0.0;

@@ -29,10 +29,10 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.subsystems.drive.encoders.ModuleEncoderThrifty;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.Queue;
 import java.util.function.DoubleSupplier;
 
@@ -41,17 +41,18 @@ import java.util.function.DoubleSupplier;
  * and duty cycle absolute encoder.
  */
 public class ModuleIOSpark implements ModuleIO {
+//   private final int moduleId;
   private final Rotation2d zeroRotation;
 
   // Hardware objects
   private final SparkBase driveSpark;
   private final SparkBase turnSpark;
   private final RelativeEncoder driveEncoder;
-  private final ModuleEncoderThrifty turnEncoder;
+//   private final RelativeEncoder turnEncoder;
 
   // Closed loop controllers
   private final SparkClosedLoopController driveController;
-  private final SparkClosedLoopController turnController;
+//   private final SparkClosedLoopController turnController;
 
   // Queue inputs from odometry thread
   private final Queue<Double> timestampQueue;
@@ -61,6 +62,12 @@ public class ModuleIOSpark implements ModuleIO {
   // Connection debouncers
   private final Debouncer driveConnectedDebounce = new Debouncer(0.5);
   private final Debouncer turnConnectedDebounce = new Debouncer(0.5);
+
+  private final PIDController turnPidController = new PIDController(5, 0, 0);
+
+//   private final TrapezoidProfile.Constraints turnConstraints =
+//       new TrapezoidProfile.Constraints(2 * 2 * Math.PI, 2 * 2 * Math.PI);
+//   private final TrapezoidProfile turnProfile = new TrapezoidProfile(turnConstraints);
 
   public ModuleIOSpark(int module) {
     zeroRotation =
@@ -91,19 +98,11 @@ public class ModuleIOSpark implements ModuleIO {
               default -> 0;
             },
             MotorType.kBrushless);
-    turnEncoder =
-        new ModuleEncoderThrifty(
-            switch (module) {
-              case 0 -> frontLeftThriftyId;
-              case 1 -> frontRightThriftyId;
-              case 2 -> backLeftThriftyId;
-              case 3 -> backRightThriftyId;
-              default -> 0;
-            });
 
     driveEncoder = driveSpark.getEncoder();
+    // turnEncoder = turnSpark.getEncoder();
     driveController = driveSpark.getClosedLoopController();
-    turnController = turnSpark.getClosedLoopController();
+    // turnController = turnSpark.getClosedLoopController();
 
     // Configure drive motor
     var driveConfig = new SparkMaxConfig();
@@ -147,15 +146,10 @@ public class ModuleIOSpark implements ModuleIO {
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(turnMotorCurrentLimit)
         .voltageCompensation(12.0);
-    turnConfig
-        .encoder
-        .inverted(turnEncoderInverted)
-        .positionConversionFactor(turnEncoderPositionFactor)
-        .velocityConversionFactor(turnEncoderVelocityFactor)
-        .uvwAverageDepth(2);
+    turnConfig.encoder.uvwAverageDepth(2);
     turnConfig
         .closedLoop
-        .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .positionWrappingEnabled(true)
         .positionWrappingInputRange(turnPIDMinInput, turnPIDMaxInput)
         .pidf(turnKp, 0.0, turnKd, 0.0);
@@ -169,19 +163,22 @@ public class ModuleIOSpark implements ModuleIO {
         .busVoltagePeriodMs(20)
         .outputCurrentPeriodMs(20);
 
-    // tryUntilOk(
-    //     turnSpark,
-    //     5,
-    //     () ->
-    //         turnSpark.configure(
-    //             turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+    tryUntilOk(
+        turnSpark,
+        5,
+        () ->
+            turnSpark.configure(
+                turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
     // Create odometry queues
     timestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
     drivePositionQueue =
         SparkOdometryThread.getInstance().registerSignal(driveSpark, driveEncoder::getPosition);
     turnPositionQueue =
-        SparkOdometryThread.getInstance().registerSignal(turnEncoder::getRawAbsolutePosition);
+        SparkOdometryThread.getInstance().registerSignal(turnSpark.getAnalog()::getPosition);
+
+    turnPidController.enableContinuousInput(0, 2 * Math.PI);
+    SmartDashboard.putData("Turn PID", turnPidController);
   }
 
   @Override
@@ -201,11 +198,12 @@ public class ModuleIOSpark implements ModuleIO {
     sparkStickyFault = false;
     ifOk(
         turnSpark,
-        turnEncoder::getRawAbsolutePosition,
-        (value) -> inputs.turnPosition = new Rotation2d(value).minus(zeroRotation));
+        turnSpark.getAnalog()::getPosition,
+        (value) ->
+            inputs.turnPosition = new Rotation2d((value / 3.3) * 2 * Math.PI).minus(zeroRotation));
     ifOk(
         turnSpark,
-        turnEncoder::getRawAbsolutePosition,
+        turnSpark.getAnalog()::getVelocity,
         (value) -> inputs.turnVelocityRadPerSec = value);
     ifOk(
         turnSpark,
@@ -221,7 +219,7 @@ public class ModuleIOSpark implements ModuleIO {
         drivePositionQueue.stream().mapToDouble((Double value) -> value).toArray();
     inputs.odometryTurnPositions =
         turnPositionQueue.stream()
-            .map((Double value) -> new Rotation2d(value).minus(zeroRotation))
+            .map((Double value) -> new Rotation2d((value / 3.3) * 2 * Math.PI).minus(zeroRotation))
             .toArray(Rotation2d[]::new);
     timestampQueue.clear();
     drivePositionQueue.clear();
@@ -251,9 +249,8 @@ public class ModuleIOSpark implements ModuleIO {
 
   @Override
   public void setTurnPosition(Rotation2d rotation) {
-    double setpoint =
-        MathUtil.inputModulus(
-            rotation.plus(zeroRotation).getRadians(), turnPIDMinInput, turnPIDMaxInput);
-    turnController.setReference(setpoint, ControlType.kPosition);
+    double currentRads = (turnSpark.getAnalog().getPosition() / 3.3 * 2 * Math.PI) - zeroRotation.getRadians();
+    double voltage = turnPidController.calculate(currentRads, rotation.getRadians());
+    turnSpark.setVoltage(voltage);
   }
 }
