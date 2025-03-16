@@ -17,10 +17,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
- * This class defines the runtime mode used by AdvantageKit. The mode is always
- * "real" when running
- * on a roboRIO. Change the value of "simMode" to switch between "sim" (physics
- * sim) and "replay"
+ * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
+ * on a roboRIO. Change the value of "simMode" to switch between "sim" (physics sim) and "replay"
  * (log replay from a file).
  */
 public final class Constants {
@@ -66,32 +64,29 @@ public final class Constants {
     public static final double kMaxTorque = 10;
   }
 
-  public static class L2Constants {
-    public static final double kL2CenterSpeed = 0.25;
-    public static final double kL2ExitSpeed = 1;
-  }
-
   public static class L1Constants {
     public static final Rotation2d kHome = Rotation2d.fromDegrees(0);
     public static final Rotation2d kPrepare = new Rotation2d(Math.toRadians(-70));
-    public static final Rotation2d kDrop = Rotation2d.fromDegrees(-110);
+    public static final Rotation2d kDrop = Rotation2d.fromDegrees(-95);
     public static final Rotation2d kIntake = Rotation2d.fromDegrees(-40);
   }
 
-  public static class PositionConstants {
-    // Testing values
-    public static final Rotation2d kAlgaeArmTestDown = new Rotation2d(-Math.PI / 2);
-    public static final Rotation2d kAlgaeArmHorizontal = new Rotation2d(0.0);
-    public static final Rotation2d kAlgaeArmUp = new Rotation2d(Math.PI / 2);
+  public static class L2Constants {
+    public static final double kL2CenterSpeed = 0.20;
+    public static final double kL2ExitSpeed = 1;
+  }
 
-    // Algae Arm values
-    public static final Rotation2d kAlgaeArmOut = new Rotation2d(Math.toRadians(-30));
-    public static final Rotation2d kAlgaeArmDown = new Rotation2d(Math.toRadians(-60));
-    public static final Rotation2d kAlgaeArmAway = new Rotation2d(Math.toRadians(80));
+  public static class ArmConstants {
+    // voltages
+    public static final double kLowIntake = 12;
+    public static final double kLowExpell = -12;
+    public static final double kHighIntake = 12;
+    public static final double kHighExpell = -12;
 
-    // Algae Intake values
-    public static final double kAlgaeIntakeIn = 3000;
-    public static final double kAlgaeIntakeOut = -3000;
-    public static final double kAlgaeIntakeHold = 0;
+    public static final Rotation2d kHomeUp = Rotation2d.fromDegrees(80);
+    public static final Rotation2d kSTART = Rotation2d.fromDegrees(80);
+    public static final Rotation2d kHigh = Rotation2d.fromDegrees(40);
+    public static final Rotation2d kLow = Rotation2d.fromDegrees(0);
+    public static final Rotation2d kHomeDown = Rotation2d.fromDegrees(-30);
   }
 }

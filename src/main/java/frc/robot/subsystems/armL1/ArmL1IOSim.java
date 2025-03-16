@@ -49,4 +49,10 @@ public class ArmL1IOSim implements ArmL1IO {
   public Rotation2d getCurrentAngle() {
     return new Rotation2d(armL1Sim.getAngleRads());
   }
+
+  @Override
+  public void zero() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'zero'");
+  }
 }

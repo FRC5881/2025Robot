@@ -22,7 +22,7 @@ public class ArmL1Subsystem extends SubsystemBase {
     } else {
       io = new ArmL1IOReal();
     }
-    
+
     setDefaultCommand(cDegControl());
   }
 
@@ -42,11 +42,16 @@ public class ArmL1Subsystem extends SubsystemBase {
     return Commands.runOnce(() -> this.setpoint = setpoint);
   }
 
+  public void zero() {
+    io.zero();
+  }
+
   public Command cDegControl() {
     return runEnd(
             () -> {
               Rotation2d currentPos = io.getCurrentAngle();
-              double voltage = pidController.calculate(currentPos.getDegrees(), this.setpoint.getDegrees()); 
+              double voltage =
+                  pidController.calculate(currentPos.getDegrees(), this.setpoint.getDegrees());
               io.setVoltage(voltage);
             },
             io::stop)

@@ -41,18 +41,18 @@ import java.util.function.DoubleSupplier;
  * and duty cycle absolute encoder.
  */
 public class ModuleIOSpark implements ModuleIO {
-//   private final int moduleId;
+  //   private final int moduleId;
   private final Rotation2d zeroRotation;
 
   // Hardware objects
   private final SparkBase driveSpark;
   private final SparkBase turnSpark;
   private final RelativeEncoder driveEncoder;
-//   private final RelativeEncoder turnEncoder;
+  //   private final RelativeEncoder turnEncoder;
 
   // Closed loop controllers
   private final SparkClosedLoopController driveController;
-//   private final SparkClosedLoopController turnController;
+  //   private final SparkClosedLoopController turnController;
 
   // Queue inputs from odometry thread
   private final Queue<Double> timestampQueue;
@@ -63,11 +63,11 @@ public class ModuleIOSpark implements ModuleIO {
   private final Debouncer driveConnectedDebounce = new Debouncer(0.5);
   private final Debouncer turnConnectedDebounce = new Debouncer(0.5);
 
-  private final PIDController turnPidController = new PIDController(5, 0, 0);
+  private final PIDController turnPidController = new PIDController(4, 0, 0);
 
-//   private final TrapezoidProfile.Constraints turnConstraints =
-//       new TrapezoidProfile.Constraints(2 * 2 * Math.PI, 2 * 2 * Math.PI);
-//   private final TrapezoidProfile turnProfile = new TrapezoidProfile(turnConstraints);
+  //   private final TrapezoidProfile.Constraints turnConstraints =
+  //       new TrapezoidProfile.Constraints(2 * 2 * Math.PI, 2 * 2 * Math.PI);
+  //   private final TrapezoidProfile turnProfile = new TrapezoidProfile(turnConstraints);
 
   public ModuleIOSpark(int module) {
     zeroRotation =
@@ -249,7 +249,8 @@ public class ModuleIOSpark implements ModuleIO {
 
   @Override
   public void setTurnPosition(Rotation2d rotation) {
-    double currentRads = (turnSpark.getAnalog().getPosition() / 3.3 * 2 * Math.PI) - zeroRotation.getRadians();
+    double currentRads =
+        (turnSpark.getAnalog().getPosition() / 3.3 * 2 * Math.PI) - zeroRotation.getRadians();
     double voltage = turnPidController.calculate(currentRads, rotation.getRadians());
     turnSpark.setVoltage(voltage);
   }
