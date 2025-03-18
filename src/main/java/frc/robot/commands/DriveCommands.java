@@ -68,13 +68,8 @@ public class DriveCommands {
         .getTranslation();
   }
 
-  public static Command driveReverse(Drive drive) {
-    ChassisSpeeds speed = new ChassisSpeeds(0, -1, 0);
-    return Commands.runEnd(
-        () -> {
-          drive.runVelocity(speed);
-        },
-        drive::stop);
+  public static Command stopWithX(Drive drive) {
+    return Commands.run(drive::stopWithX);
   }
 
   public static final String kDriverTranslationSensitivity = "Driver Translation";
@@ -107,9 +102,9 @@ public class DriveCommands {
           * Preferences.getDouble(kCopilotRotationSensitivity, 1.0);
 
       ChassisSpeeds fieldSpeeds = new ChassisSpeeds(
-          driverTranslation.getX() + copilotTranslation.getX(),
-          driverTranslation.getY() + copilotTranslation.getY(),
-          driverRotation + copilotRotation
+          (driverTranslation.getX() + copilotTranslation.getX()) * drive.getMaxLinearSpeedMetersPerSec(),
+          (driverTranslation.getY() + copilotTranslation.getY()) * drive.getMaxLinearSpeedMetersPerSec(),
+          (driverRotation + copilotRotation) * drive.getMaxAngularSpeedRadPerSec()
       );
 
       double drift = Preferences.getDouble(kDriftSensitivity, 1.0) * MathUtil.clamp((driver.getL1Button() ? 1d : 0d) + (copilot.getL1Button() ? 1d : 0d) - (driver.getR1Button() ? 1d : 0d) - (copilot.getR1Button() ? 1d : 0d) , -1d, 1d);
@@ -137,7 +132,7 @@ public class DriveCommands {
       ChassisSpeeds fieldSpeeds = new ChassisSpeeds(
           translation.getX() * drive.getMaxLinearSpeedMetersPerSec(),
           translation.getY() * drive.getMaxLinearSpeedMetersPerSec(),
-          omega
+          omega * drive.getMaxAngularSpeedRadPerSec()
       );
 
       double drift = Preferences.getDouble(kDriftSensitivity, 1.0) * ((controller.getL1Button() ? 1d : 0d) - (controller.getR1Button() ? 1d : 0d));
