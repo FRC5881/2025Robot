@@ -1,7 +1,12 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -11,41 +16,53 @@ import frc.robot.Constants;
 
 // + voltage = exits left
 public class L2Subsystem extends SubsystemBase {
-  public final SparkMax L2Motor = new SparkMax(Constants.CANConstants.kL2Id, MotorType.kBrushless);
-  public final DigitalInput leftSensor = new DigitalInput(8);
-  public final DigitalInput rightSensor = new DigitalInput(9);
+  public final SparkMax conveyor = new SparkMax(Constants.CANConstants.kL2Id, MotorType.kBrushless);
+  public final SparkMax ramp = new SparkMax(Constants.CANConstants.kL2Id, MotorType.kBrushless);
 
-  public final DigitalInput reefSensor = new DigitalInput(7);
+  public final DigitalInput leftSensor = new DigitalInput(8);
+  public final DigitalInput reefSensor = new DigitalInput(9);
 
   public L2Subsystem() {
+    var conveyorConfig = new SparkMaxConfig();
+    conveyorConfig.smartCurrentLimit(20);
+    conveyor.configure(conveyorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    var rampConfig = new SparkMaxConfig();
+    rampConfig.smartCurrentLimit(30).idleMode(IdleMode.kBrake);
+    rampConfig.encoder.positionConversionFactor(5 * 5);
+    rampConfig.closedLoop.maxOutput(6).p(1.0);
+    ramp.configure(rampConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
     setDefaultCommand(centerCommand());
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("L2/Left Sensor", leftSensor.get());
-    SmartDashboard.putBoolean("L2/Right Sensor", rightSensor.get());
+    SmartDashboard.putBoolean("L2/Reef Sensor", reefSensor.get());
+    SmartDashboard.putNumber("L2/Ramp Current", ramp.getOutputCurrent());
+    SmartDashboard.putNumber("L2/Ramp Temperature", ramp.getMotorTemperature());
   }
 
-  public void output(double speed) {
-    L2Motor.set(speed);
+  private void set(double speed) {
+    conveyor.set(speed);
   }
 
-  public void center(double speed) {
+  private void center(double speed) {
     if (leftSensor.get()) {
-      L2Motor.set(-speed);
-    } else if (rightSensor.get()) {
-      L2Motor.set(+speed);
-    } else L2Motor.stopMotor();
+      conveyor.set(-speed);
+    } else {
+      conveyor.stopMotor();
+    }
   }
 
-  public void stop() {
-    L2Motor.stopMotor();
+  private void stop() {
+    conveyor.stopMotor();
   }
 
-  public Command outputLeftCommand() {
+  public Command sendLeftCommand() {
     double speed = Constants.L2Constants.kL2ExitSpeed;
-    return runEnd(() -> output(speed), () -> stop()).withName("output left");
+    return runEnd(() -> set(speed), () -> stop()).withName("output left");
   }
 
   public Command centerCommand() {
@@ -53,12 +70,16 @@ public class L2Subsystem extends SubsystemBase {
     return runEnd(() -> center(speed), () -> stop()).withName("center");
   }
 
-  public Command outputRightCommand() {
+  public Command sendRightCommand() {
     double speed = -Constants.L2Constants.kL2ExitSpeed;
-    return runEnd(() -> output(speed), () -> stop()).withName("output right");
+    return runEnd(() -> set(speed), () -> stop()).withName("output right");
   }
 
   public Trigger reefTrigger() {
     return new Trigger(reefSensor::get);
+  }
+
+  public void zero() {
+    ramp.getEncoder().setPosition(0);
   }
 }

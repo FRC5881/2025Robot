@@ -20,15 +20,12 @@ public class ClimberSubsystem extends SubsystemBase {
     var config = new SparkMaxConfig();
     config.smartCurrentLimit(30).inverted(false);
     config.idleMode(IdleMode.kBrake);
-    // config.softLimit.forwardSoftLimit(0).forwardSoftLimitEnabled(true);
 
     tryUntilOk(
         motor,
         5,
-        () ->
-            motor.configure(
-                config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
-    tryUntilOk(motor, 5, () -> motor.getEncoder().setPosition(0.0));
+        () -> motor.configure(
+            config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
   }
 
   public Command cExtend() {

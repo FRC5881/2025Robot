@@ -5,8 +5,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 
-/** PenningtonLEDs is the low-level interface to control our custom-made LED controller. */
+/** PenningtonLEDs controls our custom-made LED controller. */
 public class PenningtonLEDs extends SubsystemBase {
   private AnalogOutput m_analogOutput;
 
@@ -59,9 +60,12 @@ public class PenningtonLEDs extends SubsystemBase {
   /**
    * Sets the desired pattern for the LEDs to display.
    *
-   * <p>This pattern is held until a new pattern is set.
+   * <p>
+   * This pattern is held until a new pattern is set.
    *
-   * <p>Note: The new pattern only takes effect after the previous pattern's cycle has completed
+   * <p>
+   * Note: The new pattern only takes effect after the previous pattern's cycle
+   * has completed
    *
    * @param pattern the {@link RawPattern} to display
    */
@@ -76,15 +80,15 @@ public class PenningtonLEDs extends SubsystemBase {
           if (color.isPresent()) {
             if (color.get().equals(Alliance.Red)) {
               if (DriverStation.isEnabled()) {
-                this.setPattern(RawPattern.BREATHING_RED);
-              } else {
                 this.setPattern(RawPattern.SOLID_RED);
+              } else {
+                this.setPattern(RawPattern.BREATHING_RED);
               }
             } else {
               if (DriverStation.isEnabled()) {
-                this.setPattern(RawPattern.BREATHING_BLUE);
-              } else {
                 this.setPattern(RawPattern.SOLID_BLUE);
+              } else {
+                this.setPattern(RawPattern.BREATHING_BLUE);
               }
             }
           } else {
@@ -94,6 +98,7 @@ public class PenningtonLEDs extends SubsystemBase {
   }
 
   public Command cSetPattern(RawPattern pattern) {
-    return run(() -> this.setPattern(pattern));
+    return run(() -> this.setPattern(pattern)).ignoringDisable(true)
+        .withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
   }
 }

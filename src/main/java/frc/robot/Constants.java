@@ -17,8 +17,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
- * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
- * on a roboRIO. Change the value of "simMode" to switch between "sim" (physics sim) and "replay"
+ * This class defines the runtime mode used by AdvantageKit. The mode is always
+ * "real" when running
+ * on a roboRIO. Change the value of "simMode" to switch between "sim" (physics
+ * sim) and "replay"
  * (log replay from a file).
  */
 public final class Constants {
@@ -39,15 +41,12 @@ public final class Constants {
   public static class CANConstants {
     // Swerve Drive 1-8
 
-    // Arm
-    public static final int kPivotMotor = 10;
-    public static final int kIntakeMotor = 11;
-
     // L1
-    public static final int kMotorL1 = 20;
+    public static final int kL1Motor = 20;
 
     // L2
     public static final int kL2Id = 26;
+    public static final int kL2RampId = 27;
 
     // Climber
     public static final int kClimberId = 30;
@@ -59,9 +58,6 @@ public final class Constants {
   }
 
   public static class ClimberConstants {
-    public static final double kClimberSpeed = 0.5;
-    public static final double kMinClimberSpeed = 0;
-    public static final double kMaxTorque = 10;
   }
 
   public static class L1Constants {
@@ -72,21 +68,8 @@ public final class Constants {
   }
 
   public static class L2Constants {
-    public static final double kL2CenterSpeed = 0.20;
-    public static final double kL2ExitSpeed = 1;
-  }
-
-  public static class ArmConstants {
-    // voltages
-    public static final double kLowIntake = 12;
-    public static final double kLowExpell = -12;
-    public static final double kHighIntake = 12;
-    public static final double kHighExpell = -12;
-
-    public static final Rotation2d kHomeUp = Rotation2d.fromDegrees(80);
-    public static final Rotation2d kSTART = Rotation2d.fromDegrees(80);
-    public static final Rotation2d kHigh = Rotation2d.fromDegrees(40);
-    public static final Rotation2d kLow = Rotation2d.fromDegrees(0);
-    public static final Rotation2d kHomeDown = Rotation2d.fromDegrees(-30);
+    public static final double kL2CenterSpeed = 1.0;
+    public static final double kL2ExitSpeed = 1.0;
+    public static final double kL2RampRatio = 5 * 5;
   }
 }

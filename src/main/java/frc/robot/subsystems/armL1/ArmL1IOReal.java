@@ -8,7 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants;
 
 public class ArmL1IOReal implements ArmL1IO {
-  SparkMax motorL1 = new SparkMax(Constants.CANConstants.kMotorL1, MotorType.kBrushless);
+  SparkMax motorL1 = new SparkMax(Constants.CANConstants.kL1Motor, MotorType.kBrushless);
 
   @Override
   public void setVoltage(double voltage) {
