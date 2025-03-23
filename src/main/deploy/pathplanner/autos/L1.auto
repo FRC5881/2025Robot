@@ -27,6 +27,12 @@
           "data": {
             "pathName": "Flee"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "180 zero"
+          }
         }
       ]
     }
