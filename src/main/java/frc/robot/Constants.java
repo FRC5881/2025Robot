@@ -17,10 +17,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
- * This class defines the runtime mode used by AdvantageKit. The mode is always
- * "real" when running
- * on a roboRIO. Change the value of "simMode" to switch between "sim" (physics
- * sim) and "replay"
+ * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
+ * on a roboRIO. Change the value of "simMode" to switch between "sim" (physics sim) and "replay"
  * (log replay from a file).
  */
 public final class Constants {
@@ -57,18 +55,17 @@ public final class Constants {
     public static final int kCopilotControllerPort = 1;
   }
 
-  public static class ClimberConstants {
-  }
+  public static class ClimberConstants {}
 
   public static class L1Constants {
     public static final Rotation2d kHome = Rotation2d.fromDegrees(0);
     public static final Rotation2d kPrepare = new Rotation2d(Math.toRadians(-70));
-    public static final Rotation2d kDrop = Rotation2d.fromDegrees(-95);
     public static final Rotation2d kIntake = Rotation2d.fromDegrees(-40);
+    public static final Rotation2d kDrop = Rotation2d.fromDegrees(-85);
   }
 
   public static class L2Constants {
-    public static final double kL2CenterSpeed = 1.0;
+    public static final double kL2CenterSpeed = 0.25;
     public static final double kL2ExitSpeed = 1.0;
     public static final double kL2RampRatio = 5 * 5;
   }

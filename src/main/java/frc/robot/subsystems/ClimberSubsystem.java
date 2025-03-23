@@ -24,8 +24,9 @@ public class ClimberSubsystem extends SubsystemBase {
     tryUntilOk(
         motor,
         5,
-        () -> motor.configure(
-            config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+        () ->
+            motor.configure(
+                config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
   }
 
   public Command cExtend() {

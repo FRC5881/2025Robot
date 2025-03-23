@@ -4,8 +4,8 @@ import edu.wpi.first.wpilibj.AnalogOutput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** PenningtonLEDs controls our custom-made LED controller. */
 public class PenningtonLEDs extends SubsystemBase {
@@ -60,12 +60,9 @@ public class PenningtonLEDs extends SubsystemBase {
   /**
    * Sets the desired pattern for the LEDs to display.
    *
-   * <p>
-   * This pattern is held until a new pattern is set.
+   * <p>This pattern is held until a new pattern is set.
    *
-   * <p>
-   * Note: The new pattern only takes effect after the previous pattern's cycle
-   * has completed
+   * <p>Note: The new pattern only takes effect after the previous pattern's cycle has completed
    *
    * @param pattern the {@link RawPattern} to display
    */
@@ -98,7 +95,8 @@ public class PenningtonLEDs extends SubsystemBase {
   }
 
   public Command cSetPattern(RawPattern pattern) {
-    return run(() -> this.setPattern(pattern)).ignoringDisable(true)
+    return run(() -> this.setPattern(pattern))
+        .ignoringDisable(true)
         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
   }
 }

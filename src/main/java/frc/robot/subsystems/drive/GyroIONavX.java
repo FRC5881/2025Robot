@@ -19,9 +19,6 @@ import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import java.util.Optional;
 import java.util.Queue;
 
 /** IO implementation for NavX. */
@@ -33,12 +30,6 @@ public class GyroIONavX implements GyroIO {
   public GyroIONavX() {
     yawTimestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
     yawPositionQueue = SparkOdometryThread.getInstance().registerSignal(navX::getAngle);
-  }
-
-  public Rotation2d addColor() {
-    return DriverStation.getAlliance() == Optional.of(Alliance.Red)
-        ? Rotation2d.k180deg
-        : Rotation2d.kZero;
   }
 
   @Override
