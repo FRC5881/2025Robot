@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import com.pathplanner.lib.auto.NamedCommands;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,15 +15,16 @@ public class Autos {
     NamedCommands.registerCommand("L1-Ready", prepL1(l1));
     NamedCommands.registerCommand("L1", dropL1(l1));
     NamedCommands.registerCommand("L2", autoL2(l2, drive));
-    NamedCommands.registerCommand("180 zero", Commands.runOnce(
-        () -> {
-          drive.resetOdometry(
-              new Pose2d(drive.getPose().getTranslation(), Rotation2d.k180deg));
-        }));
+    NamedCommands.registerCommand(
+        "180 zero",
+        Commands.runOnce(
+            () -> {
+              drive.resetOdometry(new Pose2d(drive.getPose().getTranslation(), Rotation2d.k180deg));
+            }));
   }
 
   public static Command dropL1(ArmL1Subsystem l1) {
-    return l1.cSetpoint(L1Constants.kDrop);
+    return l1.cSetpoint(L1Constants.kDrop).andThen(Commands.waitSeconds(1));
   }
 
   public static Command prepL1(ArmL1Subsystem l1) {

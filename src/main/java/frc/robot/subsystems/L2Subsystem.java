@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
+import frc.robot.Constants.L2Constants;
 
 // + voltage = exits left
 public class L2Subsystem extends SubsystemBase {
@@ -57,10 +58,8 @@ public class L2Subsystem extends SubsystemBase {
     conveyor.set(speed);
   }
 
-  public static double setpoint = 0.7;
-
   private void center(double speed) {
-    ramp.getClosedLoopController().setReference(setpoint, ControlType.kPosition);
+    ramp.getClosedLoopController().setReference(L2Constants.kL2RampPosition, ControlType.kPosition);
     if (coralSensor.get()) {
       conveyor.set(speed);
     } else {

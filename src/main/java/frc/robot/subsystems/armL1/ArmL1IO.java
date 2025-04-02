@@ -7,6 +7,12 @@ public interface ArmL1IO {
 
   public void zero();
 
+  public double getTemp();
+
+  public double getCurrent();
+
+  public boolean getLimit();
+
   public double getVoltage();
 
   public Rotation2d getCurrentAngle();

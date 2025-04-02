@@ -1,6 +1,7 @@
 package frc.robot.subsystems.armL1;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -9,7 +10,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ArmL1Subsystem extends SubsystemBase {
-  private final PIDController pidController = new PIDController(0.024, 0.0035, 0.00015); // Tuned
+  private final PIDController pidController = new PIDController(0.075, 0, 0); // Tuned
+  private final SlewRateLimiter limit = new SlewRateLimiter(110 / 0.15, -110.0 / 0.3, 0.0);
 
   public ArmL1IO io;
 
@@ -23,6 +25,7 @@ public class ArmL1Subsystem extends SubsystemBase {
       io = new ArmL1IOReal();
     }
 
+    pidController.setTolerance(2.5);
     setDefaultCommand(cDegControl());
   }
 
@@ -35,6 +38,9 @@ public class ArmL1Subsystem extends SubsystemBase {
     SmartDashboard.putNumber("L1/currentAngle", io.getCurrentAngle().getDegrees());
     SmartDashboard.putNumber("L1/Setpoint", this.setpoint.getDegrees());
     SmartDashboard.putNumber("L1/voltage", io.getVoltage());
+    SmartDashboard.putNumber("L1/current", io.getCurrent());
+    SmartDashboard.putNumber("L1/temp", io.getTemp());
+    SmartDashboard.putBoolean("L1/limit", io.getLimit());
     SmartDashboard.putData("L1/L1PID", pidController);
   }
 
@@ -49,10 +55,14 @@ public class ArmL1Subsystem extends SubsystemBase {
   public Command cDegControl() {
     return runEnd(
             () -> {
+              double setpoint = limit.calculate(this.setpoint.getDegrees());
               Rotation2d currentPos = io.getCurrentAngle();
-              double voltage =
-                  pidController.calculate(currentPos.getDegrees(), this.setpoint.getDegrees());
-              io.setVoltage(voltage);
+              double voltage = pidController.calculate(currentPos.getDegrees(), setpoint);
+              if (pidController.atSetpoint()) {
+                io.setVoltage(0);
+              } else {
+                io.setVoltage(voltage);
+              }
             },
             io::stop)
         .withName("cDegControl");

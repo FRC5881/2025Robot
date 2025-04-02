@@ -59,14 +59,17 @@ public final class Constants {
 
   public static class L1Constants {
     public static final Rotation2d kHome = Rotation2d.fromDegrees(0);
-    public static final Rotation2d kPrepare = new Rotation2d(Math.toRadians(-70));
-    public static final Rotation2d kIntake = Rotation2d.fromDegrees(-40);
-    public static final Rotation2d kDrop = Rotation2d.fromDegrees(-85);
+    public static final Rotation2d kIntake = Rotation2d.fromDegrees(35);
+    public static final Rotation2d kPrepare = new Rotation2d(Math.toRadians(80));
+    public static final Rotation2d kDrop = Rotation2d.fromDegrees(110);
+
+    public static final double kL1Ratio = 4 * 5;
   }
 
   public static class L2Constants {
-    public static final double kL2CenterSpeed = 0.25;
-    public static final double kL2ExitSpeed = 1.0;
+    public static final double kL2CenterSpeed = 0.25 * 4.0 / 5.0;
+    public static final double kL2ExitSpeed = 0.75;
     public static final double kL2RampRatio = 5 * 5;
+    public static final double kL2RampPosition = 0.8;
   }
 }

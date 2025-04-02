@@ -43,12 +43,9 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
- * This class is where the bulk of the robot should be declared. Since
- * Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in
- * the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of
- * the robot (including
+ * This class is where the bulk of the robot should be declared. Since Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
@@ -61,54 +58,51 @@ public class RobotContainer {
   private SwerveDriveSimulation driveSimulation = null;
   private final LoggedDashboardChooser<Command> autoChooser;
 
-  private final CommandPS5Controller m_driverController = new CommandPS5Controller(
-      OperatorConstants.kDriverControllerPort);
+  private final CommandPS5Controller m_driverController =
+      new CommandPS5Controller(OperatorConstants.kDriverControllerPort);
 
   public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
-        drive = new Drive(
-            new GyroIONavX(),
-            new ModuleIOSpark(0),
-            new ModuleIOSpark(1),
-            new ModuleIOSpark(2),
-            new ModuleIOSpark(3),
-            (pose) -> {
-            });
+        drive =
+            new Drive(
+                new GyroIONavX(),
+                new ModuleIOSpark(0),
+                new ModuleIOSpark(1),
+                new ModuleIOSpark(2),
+                new ModuleIOSpark(3),
+                (pose) -> {});
         break;
 
       case SIM:
         // create a maple-sim swerve drive simulation instance
-        this.driveSimulation = new SwerveDriveSimulation(
-            DriveConstants.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
+        this.driveSimulation =
+            new SwerveDriveSimulation(
+                DriveConstants.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
         // Add the drive simulation to the arena
         SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
         // Sim robot, instantiate physics sim IO implementations
-        drive = new Drive(
-            new GyroIOSim(driveSimulation.getGyroSimulation()),
-            new ModuleIOSim(driveSimulation.getModules()[0]),
-            new ModuleIOSim(driveSimulation.getModules()[1]),
-            new ModuleIOSim(driveSimulation.getModules()[2]),
-            new ModuleIOSim(driveSimulation.getModules()[3]),
-            driveSimulation::setSimulationWorldPose);
+        drive =
+            new Drive(
+                new GyroIOSim(driveSimulation.getGyroSimulation()),
+                new ModuleIOSim(driveSimulation.getModules()[0]),
+                new ModuleIOSim(driveSimulation.getModules()[1]),
+                new ModuleIOSim(driveSimulation.getModules()[2]),
+                new ModuleIOSim(driveSimulation.getModules()[3]),
+                driveSimulation::setSimulationWorldPose);
         break;
 
       default:
         // Replayed robot, disable IO implementations
-        drive = new Drive(
-            new GyroIO() {
-            },
-            new ModuleIO() {
-            },
-            new ModuleIO() {
-            },
-            new ModuleIO() {
-            },
-            new ModuleIO() {
-            },
-            (pose) -> {
-            });
+        drive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                (pose) -> {});
         break;
     }
 
@@ -140,54 +134,41 @@ public class RobotContainer {
   }
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be
-   * created by
+   * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
-   * it to a {@link
+   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureBindings() {
-    drive.setDefaultCommand(
-        DriveCommands.driftDrive(
-            drive, m_driverController.getHID()));
+    drive.setDefaultCommand(DriveCommands.driftDrive(drive, m_driverController.getHID()));
 
     // Reset gyro / odometry
     m_driverController
         .touchpad()
         .onTrue(
             Commands.runOnce(
-                () -> drive.resetOdometry(
-                    new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
-                drive)
+                    () ->
+                        drive.resetOdometry(
+                            new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
+                    drive)
                 .ignoringDisable(true));
 
     // L2 Subsystem
-    m_driverController.L1().whileTrue(l2Subsystem.sendLeftCommand());
-    m_driverController.R1().whileTrue(l2Subsystem.sendRightCommand());
+    m_driverController.R1().whileTrue(l2Subsystem.sendLeftCommand());
+    m_driverController.L1().whileTrue(l2Subsystem.sendRightCommand());
 
     // Climber
     m_driverController.povUp().whileTrue(climber.cExtend());
     m_driverController.povDown().whileTrue(climber.cRetract());
 
     // L1 Subsystem
-    m_driverController
-        .triangle()
-        .onTrue(l1Subsystem.cSetpoint(Constants.L1Constants.kHome));
-    m_driverController
-        .circle()
-        .onTrue(l1Subsystem.cSetpoint(Constants.L1Constants.kPrepare));
-    m_driverController
-        .square()
-        .onTrue(l1Subsystem.cSetpoint(Constants.L1Constants.kIntake));
-    m_driverController
-        .cross()
-        .onTrue(l1Subsystem.cSetpoint(Constants.L1Constants.kDrop));
+    m_driverController.triangle().onTrue(l1Subsystem.cSetpoint(Constants.L1Constants.kHome));
+    m_driverController.circle().onTrue(l1Subsystem.cSetpoint(Constants.L1Constants.kPrepare));
+    m_driverController.square().onTrue(l1Subsystem.cSetpoint(Constants.L1Constants.kIntake));
+    m_driverController.cross().onTrue(l1Subsystem.cSetpoint(Constants.L1Constants.kDrop));
 
     // Zero mechanisms
-    m_driverController
-        .options()
-        .onTrue(Commands.runOnce(this::zero).ignoringDisable(true));
+    m_driverController.options().onTrue(Commands.runOnce(this::zero).ignoringDisable(true));
 
     // Assisted Driving
     l2Subsystem
@@ -217,16 +198,14 @@ public class RobotContainer {
   }
 
   public void resetSimulationField() {
-    if (Constants.currentMode != Constants.Mode.SIM)
-      return;
+    if (Constants.currentMode != Constants.Mode.SIM) return;
 
     drive.resetOdometry(new Pose2d(3, 3, new Rotation2d()));
     SimulatedArena.getInstance().resetFieldForAuto();
   }
 
   public void displaySimFieldToAdvantageScope() {
-    if (Constants.currentMode != Constants.Mode.SIM)
-      return;
+    if (Constants.currentMode != Constants.Mode.SIM) return;
 
     Logger.recordOutput(
         "FieldSimulation/RobotSimulation", driveSimulation.getSimulatedDriveTrainPose());
