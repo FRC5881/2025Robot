@@ -51,26 +51,20 @@ public class ArmL1IOSim implements ArmL1IO {
   }
 
   @Override
-  public void zero() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'zero'");
-  }
+  public void zero() {}
 
   @Override
   public double getTemp() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getTemp'");
+    return 0;
   }
 
   @Override
   public double getCurrent() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getCurrent'");
+    return armL1Sim.getCurrentDrawAmps();
   }
 
   @Override
   public boolean getLimit() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getLimit'");
+    return false;
   }
 }
