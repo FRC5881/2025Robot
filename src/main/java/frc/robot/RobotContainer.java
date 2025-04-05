@@ -28,7 +28,6 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.L2Subsystem;
-import frc.robot.subsystems.armL1.ArmL1Subsystem;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
@@ -37,6 +36,7 @@ import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
+import frc.robot.subsystems.l1.L1Subsystem;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
@@ -52,7 +52,7 @@ public class RobotContainer {
   private final Drive drive;
   private final L2Subsystem l2Subsystem = new L2Subsystem();
   private final ClimberSubsystem climber = new ClimberSubsystem();
-  private final ArmL1Subsystem l1Subsystem = new ArmL1Subsystem();
+  private final L1Subsystem l1Subsystem = new L1Subsystem();
 
   // Dashboard inputs
   private SwerveDriveSimulation driveSimulation = null;

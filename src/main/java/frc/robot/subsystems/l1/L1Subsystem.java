@@ -1,4 +1,4 @@
-package frc.robot.subsystems.armL1;
+package frc.robot.subsystems.l1;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -9,20 +9,20 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class ArmL1Subsystem extends SubsystemBase {
+public class L1Subsystem extends SubsystemBase {
   private final PIDController pidController = new PIDController(0.075, 0, 0); // Tuned
   private final SlewRateLimiter limit = new SlewRateLimiter(110 / 0.15, -110.0 / 0.3, 0.0);
 
-  public ArmL1IO io;
+  public L1IO io;
 
   // The angle system is the same as the AlgaeArm
   public Rotation2d setpoint = new Rotation2d(Math.toRadians(0));
 
-  public ArmL1Subsystem() {
+  public L1Subsystem() {
     if (RobotBase.isSimulation()) {
-      io = new ArmL1IOSim();
+      io = new L1IOSim();
     } else {
-      io = new ArmL1IOReal();
+      io = new L1IOReal();
     }
 
     pidController.setTolerance(2.5);

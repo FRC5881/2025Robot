@@ -1,4 +1,4 @@
-package frc.robot.subsystems.armL1;
+package frc.robot.subsystems.l1;
 
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -11,12 +11,12 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
 import frc.robot.Constants.L1Constants;
 
-public class ArmL1IOReal implements ArmL1IO {
+public class L1IOReal implements L1IO {
   private final SparkMax motorL1 =
       new SparkMax(Constants.CANConstants.kL1Motor, MotorType.kBrushless);
   private final DigitalInput limitSwitch = new DigitalInput(7);
 
-  public ArmL1IOReal() {
+  public L1IOReal() {
     var config = new SparkMaxConfig();
     config.idleMode(IdleMode.kCoast);
     config.smartCurrentLimit(60);

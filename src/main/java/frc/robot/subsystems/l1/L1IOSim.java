@@ -1,4 +1,4 @@
-package frc.robot.subsystems.armL1;
+package frc.robot.subsystems.l1;
 
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Kilograms;
@@ -11,7 +11,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
-public class ArmL1IOSim implements ArmL1IO {
+public class L1IOSim implements L1IO {
 
   // TODO: Change values
   private static final Distance armLength = Inches.of(20);
@@ -30,7 +30,7 @@ public class ArmL1IOSim implements ArmL1IO {
           true,
           -Math.PI / 2);
 
-  public ArmL1IOSim() {}
+  public L1IOSim() {}
 
   public double voltage = 0;
   public boolean coralL1 = false;

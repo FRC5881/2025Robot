@@ -1,8 +1,8 @@
-package frc.robot.subsystems.armL1;
+package frc.robot.subsystems.l1;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 
-public interface ArmL1IO {
+public interface L1IO {
   public void setVoltage(double voltage);
 
   public void zero();

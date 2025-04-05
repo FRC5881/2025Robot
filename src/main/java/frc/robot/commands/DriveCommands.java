@@ -138,7 +138,7 @@ public class DriveCommands {
         drive);
   }
 
-  /** 2 player driver command, includes drifting */
+  /** includes strafing */
   public static Command driftDrive(Drive drive, PS5Controller controller) {
     Preferences.initDouble(kDriverTranslationSensitivity, 1.0);
     Preferences.initDouble(kDriverRotationSensitivity, 1.0);
@@ -147,10 +147,10 @@ public class DriveCommands {
     return Commands.run(
         () -> {
           Translation2d driverTranslation =
-              getLinearVelocityFromJoysticks(-controller.getLeftY(), -controller.getLeftX())
+              getLinearVelocityFromJoysticks(-controller.getRawAxis(1), -controller.getRawAxis(0))
                   .times(Preferences.getDouble(kDriverTranslationSensitivity, 1.0));
 
-          double driverRotation = MathUtil.applyDeadband(-controller.getRightX(), DEADBAND);
+          double driverRotation = MathUtil.applyDeadband(-controller.getRawAxis(3), DEADBAND);
           driverRotation =
               Math.copySign(driverRotation * driverRotation, driverRotation)
                   * Preferences.getDouble(kDriverRotationSensitivity, 1.0)
@@ -166,8 +166,9 @@ public class DriveCommands {
           double drift =
               Preferences.getDouble(kDriftSensitivity, 1.0)
                   * MathUtil.applyDeadband(
-                      controller.getR2Axis() - controller.getL2Axis(), DEADBAND);
-          fieldSpeeds.vxMetersPerSecond += drift;
+                      ((1 + controller.getRawAxis(2)) - (1 + controller.getRawAxis(5))) / 2.0,
+                      DEADBAND);
+          fieldSpeeds.vyMetersPerSecond += drift;
 
           drive.runVelocity(fieldSpeeds);
         },
