@@ -13,6 +13,8 @@
 
 package frc.robot;
 
+import static frc.robot.subsystems.vision.VisionConstants.*;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -37,6 +39,10 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.l1.L1Subsystem;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
@@ -53,6 +59,7 @@ public class RobotContainer {
   private final L2Subsystem l2Subsystem = new L2Subsystem();
   private final ClimberSubsystem climber = new ClimberSubsystem();
   private final L1Subsystem l1Subsystem = new L1Subsystem();
+  private final Vision vision;
 
   // Dashboard inputs
   private SwerveDriveSimulation driveSimulation = null;
@@ -73,13 +80,18 @@ public class RobotContainer {
                 new ModuleIOSpark(2),
                 new ModuleIOSpark(3),
                 (pose) -> {});
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVision(camera0Name, robotToCamera0),
+                new VisionIOPhotonVision(camera1Name, robotToCamera1));
         break;
 
       case SIM:
         // create a maple-sim swerve drive simulation instance
         this.driveSimulation =
             new SwerveDriveSimulation(
-                DriveConstants.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
+                DriveConstants.mapleSimConfig, new Pose2d(0, 0, new Rotation2d()));
         // Add the drive simulation to the arena
         SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
         // Sim robot, instantiate physics sim IO implementations
@@ -91,6 +103,13 @@ public class RobotContainer {
                 new ModuleIOSim(driveSimulation.getModules()[2]),
                 new ModuleIOSim(driveSimulation.getModules()[3]),
                 driveSimulation::setSimulationWorldPose);
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVisionSim(
+                    camera0Name, robotToCamera0, driveSimulation::getSimulatedDriveTrainPose),
+                new VisionIOPhotonVisionSim(
+                    camera1Name, robotToCamera1, driveSimulation::getSimulatedDriveTrainPose));
         break;
 
       default:
@@ -103,6 +122,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 (pose) -> {});
+        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         break;
     }
 
@@ -141,6 +161,11 @@ public class RobotContainer {
    */
   private void configureBindings() {
     drive.setDefaultCommand(DriveCommands.driftDrive(drive, m_driverController.getHID()));
+
+    m_driverController.L1().whileTrue(DriveCommands.faceReef(drive, m_driverController.getHID()));
+    m_driverController
+        .R1()
+        .whileTrue(DriveCommands.faceStation(drive, m_driverController.getHID()));
 
     // Reset gyro / odometry
     m_driverController
@@ -200,7 +225,7 @@ public class RobotContainer {
   public void resetSimulationField() {
     if (Constants.currentMode != Constants.Mode.SIM) return;
 
-    drive.resetOdometry(new Pose2d(3, 3, new Rotation2d()));
+    drive.resetOdometry(new Pose2d(4, 0, new Rotation2d()));
     SimulatedArena.getInstance().resetFieldForAuto();
   }
 

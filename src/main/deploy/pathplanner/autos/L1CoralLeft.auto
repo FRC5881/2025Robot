@@ -34,12 +34,6 @@
             "pathName": "WallLeft"
           }
         },
-        {
-          "type": "named",
-          "data": {
-            "name": "180 zero"
-          }
-        }
       ]
     }
   },

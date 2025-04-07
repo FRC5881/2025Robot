@@ -43,9 +43,9 @@ import java.util.function.Supplier;
 
 public class DriveCommands {
   private static final double DEADBAND = 0.1;
-  private static final double ANGLE_KP = 5.0;
+  private static final double ANGLE_KP = 8.0;
   private static final double ANGLE_KD = 0.4;
-  private static final double ANGLE_MAX_VELOCITY = 8.0;
+  private static final double ANGLE_MAX_VELOCITY = 20.0;
   private static final double ANGLE_MAX_ACCELERATION = 20.0;
   private static final double FF_START_DELAY = 2.0; // Secs
   private static final double FF_RAMP_RATE = 0.1; // Volts/Sec
@@ -136,6 +136,69 @@ public class DriveCommands {
           drive.runVelocity(summed);
         },
         drive);
+  }
+
+  public static Command faceReef(Drive drive, PS5Controller controller) {
+    Translation2d reef = new Translation2d(4.84505, 4.02082);
+    return point(
+        drive,
+        controller,
+        () -> {
+          double angle = drive.getPose().getTranslation().minus(reef).getAngle().getRadians();
+          angle = Math.PI + MathUtil.angleModulus(angle);
+          angle = Math.round(angle / (Math.PI / 3.0)) * (Math.PI / 3.0);
+          return Rotation2d.fromRadians(angle);
+        });
+  }
+
+  public static Command faceStation(Drive drive, PS5Controller controller) {
+    Rotation2d top = Rotation2d.fromDegrees(-55);
+    Rotation2d bottom = Rotation2d.fromDegrees(55);
+    return point(drive, controller, () -> drive.getPose().getY() > 4 ? top : bottom);
+  }
+
+  private static Command point(
+      Drive drive, PS5Controller controller, Supplier<Rotation2d> rotationSupplier) {
+    Preferences.initDouble(kDriverTranslationSensitivity, 1.0);
+
+    // Create PID controller
+    ProfiledPIDController angleController =
+        new ProfiledPIDController(
+            ANGLE_KP,
+            0.0,
+            ANGLE_KD,
+            new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+    angleController.enableContinuousInput(-Math.PI, Math.PI);
+
+    return Commands.run(
+            () -> {
+              Translation2d driverTranslation =
+                  getLinearVelocityFromJoysticks(
+                          -controller.getRawAxis(1), -controller.getRawAxis(0))
+                      .times(Preferences.getDouble(kDriverTranslationSensitivity, 1.0));
+
+              double omega =
+                  angleController.calculate(
+                      drive.getRotation().getRadians(), rotationSupplier.get().getRadians());
+
+              ChassisSpeeds fieldSpeeds =
+                  ChassisSpeeds.fromFieldRelativeSpeeds(
+                      driverTranslation.getX(),
+                      driverTranslation.getY(),
+                      omega,
+                      drive.getRotation());
+
+              double drift =
+                  Preferences.getDouble(kDriftSensitivity, 1.0)
+                      * MathUtil.applyDeadband(
+                          ((1 + controller.getRawAxis(2)) - (1 + controller.getRawAxis(5))) / 2.0,
+                          DEADBAND);
+              fieldSpeeds.vyMetersPerSecond += drift;
+
+              drive.runVelocity(fieldSpeeds);
+            },
+            drive)
+        .beforeStarting(() -> angleController.reset(drive.getRotation().getRadians()));
   }
 
   /** includes strafing */
