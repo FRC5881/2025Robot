@@ -17,13 +17,14 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
- * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
- * on a roboRIO. Change the value of "simMode" to switch between "sim" (physics sim) and "replay"
+ * This class defines the runtime mode used by AdvantageKit. The mode is always
+ * "real" when running
+ * on a roboRIO. Change the value of "simMode" to switch between "sim" (physics
+ * sim) and "replay"
  * (log replay from a file).
  */
 public final class Constants {
-  public static final Mode simMode = Mode.SIM;
-  public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
+  public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : Mode.SIM;
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -55,21 +56,31 @@ public final class Constants {
     public static final int kCopilotControllerPort = 1;
   }
 
-  public static class ClimberConstants {}
+  public static class ClimberConstants {
+  }
 
   public static class L1Constants {
+    // Scoring angles
     public static final Rotation2d kHome = Rotation2d.fromDegrees(0);
     public static final Rotation2d kIntake = Rotation2d.fromDegrees(35);
     public static final Rotation2d kPrepare = new Rotation2d(Math.toRadians(80));
     public static final Rotation2d kDrop = Rotation2d.fromDegrees(110);
 
-    public static final double kL1Ratio = 4 * 5;
+    // L1 gear ratio
+    public static final double kRatio = 4 * 5;
+
+    // Digital Input port
+    public static final int kLimitSwitch = 7;
   }
 
   public static class L2Constants {
-    public static final double kL2CenterSpeed = 0.25 * 4.0 / 5.0;
+    public static final double kL2CenterSpeed = 0.20;
     public static final double kL2ExitSpeed = 0.75;
-    public static final double kL2RampRatio = 5 * 5;
-    public static final double kL2RampPosition = 0.8;
+    public static final double kRampRatio = 5 * 5;
+    public static final double kRampAngle = 0.8; // rotations
+
+    // Digital Input ports
+    public static final int kReefSensor = 8;
+    public static final int kColorSensor = 9;
   }
 }

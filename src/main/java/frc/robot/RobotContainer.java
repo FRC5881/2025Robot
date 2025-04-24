@@ -21,10 +21,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ClimberExtend;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.ClimberSubsystem;
-import frc.robot.subsystems.L1Subsystem;
-import frc.robot.subsystems.L2Subsystem;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
@@ -48,8 +47,6 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  */
 public class RobotContainer {
   private final Drive drive;
-  private final L1Subsystem l1Subsystem = new L1Subsystem();
-  private final L2Subsystem l2Subsystem = new L2Subsystem();
   private final ClimberSubsystem climber = new ClimberSubsystem();
 
   // Dashboard inputs
@@ -132,17 +129,22 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    // Driving
     drive.setDefaultCommand(DriveCommands.driftDrive(drive, m_driverController.getHID()));
 
-    // Reset gyro / odometry
+    // Zero gyro
+    Command reset = Commands.runOnce(
+        () -> drive.resetOdometry(
+            new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
+        drive)
+        .ignoringDisable(true);
+
     m_driverController
         .touchpad()
-        .onTrue(
-            Commands.runOnce(
-                () -> drive.resetOdometry(
-                    new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
-                drive)
-                .ignoringDisable(true));
+        .onTrue(reset);
+
+    // Climber
+    m_driverController.L1().whileTrue(new ClimberExtend(climber));
   }
 
   /**

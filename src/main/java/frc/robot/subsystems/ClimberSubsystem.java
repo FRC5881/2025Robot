@@ -9,14 +9,21 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANConstants;
 
-// fully extended is 0, retracting is negative
 public class ClimberSubsystem extends SubsystemBase {
-  public final SparkMax motor = new SparkMax(CANConstants.kClimberId, MotorType.kBrushless);
+  private final SparkMax motor = new SparkMax(CANConstants.kClimberId, MotorType.kBrushless);
 
   public ClimberSubsystem() {
     var config = new SparkMaxConfig();
     config.smartCurrentLimit(30).inverted(false);
     config.idleMode(IdleMode.kBrake);
     motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+  }
+
+  public void extend() {
+    motor.set(1);
+  }
+
+  public void stop() {
+    motor.stopMotor();
   }
 }
