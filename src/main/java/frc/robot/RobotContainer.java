@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ClimberExtend;
+import frc.robot.commands.ClimberRetract;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.drive.Drive;
@@ -145,8 +146,8 @@ public class RobotContainer {
 
     // Climber
     m_driverController.L1().whileTrue(new ClimberExtend(climber));
+    m_driverController.R1().whileTrue(new ClimberRetract(climber));
   }
-
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
